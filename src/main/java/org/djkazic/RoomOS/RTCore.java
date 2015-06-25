@@ -111,12 +111,13 @@ public class RTCore implements Runnable {
 			while (true) {
 				if(speakLatch != null) {
 					if(firstFlip) {
-						speakLatch.countDown();
 						firstFlip = false;
+						speakLatch.countDown();
+					} else {
+						speakLatch.await();
+						Thread.sleep(200);
+						speakLatch = null;
 					}
-					speakLatch.await();
-					Thread.sleep(200);
-					speakLatch = null;
 				}
 				Result result = recognizer.recognize();
 				if(result != null) {
@@ -196,7 +197,11 @@ public class RTCore implements Runnable {
 				} else {
 					uc.speak("I couldn't process that.");
 				}
-				Thread.sleep(100);
+				if(playingSong) {
+					Thread.sleep(200);
+				} else {
+					Thread.sleep(100);
+				}
 				System.out.println("> LOOP <");
 			}
 		} catch (Exception e) {
