@@ -220,3 +220,4 @@ pip-log.txt
 .mr.developer.cfg
 /bin
 *.mp3
+room_os.db
