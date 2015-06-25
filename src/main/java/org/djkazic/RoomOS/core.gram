@@ -13,9 +13,9 @@ grammar core;
 	public <cmd_ambient_deactivate> = [<id>] (stop listening | take a break);
 	
 //Music commands
-	public <cmd_music_quit> = quit audio;
-	public <cmd_music_pause> = pause audio;
-	public <cmd_music_replay> = replay track;
+	public <cmd_music_ctrl_quit> = quit audio;
+	public <cmd_music_ctrl_pause> = pause audio;
+	public <cmd_music_ctrl_replay> = replay track;
 	
 //Personality
 	public <personality_existence> = [<id>] (what) (do you do | is your purpose | are you);
