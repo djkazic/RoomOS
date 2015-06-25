@@ -9,13 +9,13 @@ grammar core;
 	public <cmd_login> = <id> (authenticate | log me in);
 	
 //Ambient controls
-	public <cmd_ambient_activate> = [<id>] (wake up | come back);
+	public <cmd_ambient_activate> = [<id>] (enable listening | resume monitoring);
 	public <cmd_ambient_deactivate> = [<id>] (stop listening | take a break);
 	
 //Music commands
 	public <cmd_music_ctrl_quit> = quit audio;
 	public <cmd_music_ctrl_pause> = pause audio;
-	public <cmd_music_ctrl_replay> = replay track;
+	public <cmd_music_ctrl_resume> = resume audio;
 	
 //Personality
 	public <personality_existence> = [<id>] (what) (do you do | is your purpose | are you);
