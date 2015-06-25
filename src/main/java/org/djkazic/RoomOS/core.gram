@@ -20,7 +20,7 @@ grammar core;
 //Personality
 	public <personality_existence> = [<id>] (what) (do you do | is your purpose | are you);
 	public <personality_wearing> = [<id>] what are you wearing;
-	public <personality_phones> = [<id>] [do you like] (apple | android) or (apple | android);
+	public <personality_phones> = [<id>] [do you like] (apple | android) phones or (apple | android) phones;
 	
 //Easter eggs
 	public <ee> = [<id>] (wish me a happy fathers day);
