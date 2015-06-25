@@ -151,7 +151,8 @@ public class RTCore implements Runnable {
 									}
 
 									//Ambient listening plugin
-									if(rule.equals("cmd_ambient_deactivate")) {
+									boolean isAmbientCmd = rule.equals("cmd_ambient_deactivate");
+									if(isAmbientCmd) {
 										ambientListening = false;
 										uc.speak("Ambient listening deactivated.");
 									} else {
@@ -171,7 +172,7 @@ public class RTCore implements Runnable {
 											}
 										}
 										
-										if(!moduleFound) {
+										if(!moduleFound && !isAmbientCmd) {
 											String speakText = rf.queryForRule(rule);
 											uc.speak(speakText); //Speak DB response
 										}
