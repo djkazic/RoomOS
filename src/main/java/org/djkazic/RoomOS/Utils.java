@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
@@ -21,8 +22,10 @@ public class Utils {
 	public Connection getConnection() {
 		try {
 			if(RTCore.connection == null) {
-				RTCore.connection = DriverManager.getConnection("jdbc:mysql://localhost/room_os",
-						         Settings.getDbUser(), Settings.getDbPass());
+				Class.forName("org.sqlite.JDBC");
+				Properties prop = new Properties();
+				prop.setProperty("shared_cache", "true");
+				RTCore.connection = DriverManager.getConnection("jdbc:sqlite:room_os.db", prop);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -33,6 +36,7 @@ public class Utils {
 	public ResultSet doQuery(Connection connection, String query) {
 		try {
 			Statement stmt = connection.createStatement();
+			stmt.setQueryTimeout(40);
 			ResultSet rs = stmt.executeQuery(query);
 			return rs;
 		} catch (Exception e) {
