@@ -6,6 +6,7 @@ grammar core;
 	public <cmd_music_mood> = [<id>] (set the mood | turn the lights down [low]);
 	public <cmd_check_email> = [<id>] (see if there are | check for) [any] new emails;
 	public <cmd_check_news> = [<id>] (whats on the | [is there] any [new] | check the) news [on | for] [finance | sports | tech | technology];
+	public <cmd_login> = <id> (authenticate | log me in);
 	
 //Ambient controls
 	public <cmd_ambient_activate> = [<id>] (wake up | come back);

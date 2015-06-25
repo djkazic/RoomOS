@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -103,5 +104,27 @@ public class Utils {
 	        }
 	    }
 	    return ret.toString();
+	}
+	
+	public ArrayList<String> getRuleNames(String prefix) {
+		String[] allRules = RTCore.ruleGrammar.listRuleNames();
+		ArrayList<String> ruleNames = new ArrayList<String> ();
+		for(String str : allRules) {
+			if(str.startsWith(prefix)) {
+				ruleNames.add(str);
+			}
+		}
+		return ruleNames;
+	}
+	
+	public ArrayList<String> getAuthNames(String prefix) {
+		String[] allRules = RTCore.ruleGrammar.listRuleNames();
+		ArrayList<String> authNames = new ArrayList<String> ();
+		for(String str : allRules) {
+			if(str.startsWith(prefix)) {
+				authNames.add(RTCore.ruleGrammar.getRule(str).toString());
+			}
+		}
+		return authNames;
 	}
 }

@@ -6,14 +6,13 @@ import java.util.List;
 import org.djkazic.RoomOS.RTCore;
 import org.djkazic.RoomOS.Settings;
 import org.djkazic.RoomOS.Utils;
-import org.djkazic.RoomOS.basemodules.Module;
-
+import org.djkazic.RoomOS.basemodules.PersonalizedModule;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 
-public class NewsModule extends Module {
+public class NewsModule extends PersonalizedModule {
 
 	private Utils uc;
 	private String type;

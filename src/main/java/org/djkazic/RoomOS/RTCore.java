@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import javax.speech.recognition.RuleGrammar;
 import javax.speech.recognition.RuleParse;
-import org.djkazic.RoomOS.modules.Module;
+import org.djkazic.RoomOS.basemodules.Module;
+import org.djkazic.RoomOS.basemodules.PersonalizedModule;
 import org.djkazic.RoomOS.modules.SCModule;
 import org.djkazic.RoomOS.sql.ResponseFetcher;
 import com.gtranslate.Audio;
@@ -32,7 +33,9 @@ public class RTCore implements Runnable {
 	private static BaseRecognizer jsapiRecognizer;
 	private static boolean ambientListening;
 	private static ConfigurationManager cm;
-	private static RuleGrammar ruleGrammar;
+	public static RuleGrammar ruleGrammar;
+	private static ArrayList<Profile> profiles;
+	private static Profile currentProfile;
 	private static Recognizer recognizer;
 	private static ResponseFetcher rf;
 	private static Utils uc;
@@ -52,8 +55,13 @@ public class RTCore implements Runnable {
 		try {
 			ambientListening = true;
 			modules = new ArrayList<Module> ();
+			profiles = new ArrayList<Profile> ();
 			alreadyRead = new ArrayList<SyndEntry> ();
 
+			rf = new ResponseFetcher();
+			Profile.loadProfiles();
+			currentProfile = null;
+			
 			cm = new ConfigurationManager(RTCore.class.getResource("core.xml"));
 			uc = new Utils();
 
@@ -67,8 +75,6 @@ public class RTCore implements Runnable {
 			microphone = (Microphone) cm.lookup("microphone");
 
 			JSGFGrammar jsgf = (JSGFGrammar) cm.lookup("jsgfGrammar");
-			
-			rf = new ResponseFetcher();
 			
 			jsapiRecognizer = new BaseRecognizer(jsgf.getGrammarManager());
 			jsapiRecognizer.allocate();
@@ -118,10 +124,8 @@ public class RTCore implements Runnable {
 							
 							//Regular control
 							ArrayList<String> musicControls = new ArrayList<String> ();
-							musicControls.add("cmd_music_quit");
-							musicControls.add("cmd_music_pause");
-							musicControls.add("cmd_music_replay");
-
+							musicControls = uc.getRuleNames("cmd_music");
+							
 							if(playingSong) {
 								if(musicControls.contains(rule)) {
 									if(!resultText.equals("")) {
@@ -169,6 +173,10 @@ public class RTCore implements Runnable {
 												m.getLatch().await();
 												Thread.sleep(1000);
 												moduleFound = true;
+											} else {
+												if(m instanceof PersonalizedModule) {
+													moduleFound = true;
+												}
 											}
 										}
 										
@@ -190,5 +198,29 @@ public class RTCore implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static ArrayList<Profile> getProfileList() {
+		return profiles;
+	}
+	
+	public static void setCurrentProfile(String profName) {
+		boolean set = false;
+		for(Profile prof : profiles) {
+			if(prof.getName().equalsIgnoreCase(profName)) {
+				currentProfile = prof;
+				set = true;
+			}
+		}
+		if(!set) {
+			uc.speak("Profile " + profName + " could not be loaded.");
+		} else {
+			//TODO: prompt for PIN
+			uc.speak("Profile logged in successfully. Welcome, " + currentProfile.getName());
+		}
+	}
+	
+	public static Profile getCurrentProfile() {
+		return currentProfile;
 	}
 }
