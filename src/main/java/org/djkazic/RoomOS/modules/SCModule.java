@@ -16,6 +16,7 @@ import javazoom.jl.player.advanced.PlaybackListener;
 
 import org.djkazic.RoomOS.Settings;
 import org.djkazic.RoomOS.Utils;
+import org.djkazic.RoomOS.modules.bases.Module;
 
 import de.voidplus.soundcloud.SoundCloud;
 import de.voidplus.soundcloud.Track;

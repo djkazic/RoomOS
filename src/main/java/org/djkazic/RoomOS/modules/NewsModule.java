@@ -6,6 +6,7 @@ import java.util.List;
 import org.djkazic.RoomOS.RTCore;
 import org.djkazic.RoomOS.Settings;
 import org.djkazic.RoomOS.Utils;
+import org.djkazic.RoomOS.modules.bases.Module;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -27,7 +28,7 @@ public class NewsModule extends Module {
 		type = "news";
 		url = Settings.newsGeneric;
 		determineType();
-		uc.speak("Connecting to live feeds.");
+		uc.speak("Connecting to online data feeds.");
 		uc.speak("Your top stories today for " + type + ": ");
 		try {
 			URL feedUrl = new URL(url);
@@ -57,7 +58,7 @@ public class NewsModule extends Module {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		uc.speak("For more stories, ask again.");
+		uc.speak("For additional stories, ask again.");
 		latch.countDown();
 	}
 	
