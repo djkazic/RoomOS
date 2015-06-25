@@ -59,7 +59,7 @@ public class Profile implements Serializable {
 			for(File file : files) {
 				try {
 					Profile iterProf = load(file);
-					RTCore.getProfileList().add(iterProf);
+					RTCore.getInstance().getProfileList().add(iterProf);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

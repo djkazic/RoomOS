@@ -25,19 +25,27 @@ import com.gtranslate.Audio;
 import com.gtranslate.Language;
 
 public class Utils {
+
+	private RTCore rt;
 	
+	public Utils() {
+		if(rt == null) {
+			rt = RTCore.getInstance();
+		}
+	}
+
 	public Connection getConnection() {
 		try {
-			if(RTCore.connection == null) {
+			if(rt.connection == null) {
 				Class.forName("org.sqlite.JDBC");
 				Properties prop = new Properties();
 				prop.setProperty("shared_cache", "true");
-				RTCore.connection = DriverManager.getConnection("jdbc:sqlite:room_os.db", prop);
+				rt.connection = DriverManager.getConnection("jdbc:sqlite:room_os.db", prop);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return RTCore.connection;
+		return rt.connection;
 	}
 	
 	public ResultSet doQuery(Connection connection, String query) {
@@ -53,21 +61,21 @@ public class Utils {
 	}
 	
 	private void getAudio() {
-		RTCore.audio = Audio.getInstance();
+		rt.audio = Audio.getInstance();
 	}
 	
 	public void speak(String str) {
 		System.out.println("> " + str);
-		if(RTCore.audio == null) {
+		if(rt.audio == null) {
 			getAudio();
 		}
 		try {
 			//TODO: check for cached streams
-			InputStream sound = RTCore.audio.getAudio(str, Language.ENGLISH);
-			RTCore.audio.play(sound);
-			if(RTCore.speakLatch == null) {
-				RTCore.speakLatch = new CountDownLatch(1);
-				RTCore.speakLatch.countDown();
+			InputStream sound = rt.audio.getAudio(str, Language.ENGLISH);
+			rt.audio.play(sound);
+			if(rt.speakLatch == null) {
+				rt.speakLatch = new CountDownLatch(1);
+				rt.speakLatch.countDown();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -81,7 +89,7 @@ public class Utils {
 		} else {
 			FileInputStream fis = new FileInputStream(file);
 			try {
-				RTCore.audio.play(fis);
+				rt.audio.play(fis);
 			} catch (JavaLayerException e) {
 				e.printStackTrace();
 			}
@@ -124,7 +132,7 @@ public class Utils {
 	}
 	
 	public ArrayList<String> getRuleNames(String prefix) {
-		String[] allRules = RTCore.ruleGrammar.listRuleNames();
+		String[] allRules = rt.ruleGrammar.listRuleNames();
 		ArrayList<String> ruleNames = new ArrayList<String> ();
 		for(String str : allRules) {
 			if(str.startsWith(prefix)) {
@@ -135,11 +143,11 @@ public class Utils {
 	}
 	
 	public ArrayList<String> getAuthNames(String prefix) {
-		String[] allRules = RTCore.ruleGrammar.listRuleNames();
+		String[] allRules = rt.ruleGrammar.listRuleNames();
 		ArrayList<String> authNames = new ArrayList<String> ();
 		for(String str : allRules) {
 			if(str.startsWith(prefix)) {
-				authNames.add(RTCore.ruleGrammar.getRule(str).toString());
+				authNames.add(rt.ruleGrammar.getRule(str).toString());
 			}
 		}
 		return authNames;

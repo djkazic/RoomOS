@@ -11,7 +11,7 @@ public abstract class PersonalizedModule extends Module {
 	
 	public boolean getIndependentBoolean() {
 		Utils uc = new Utils();
-		boolean indep = RTCore.getCurrentProfile() != null;
+		boolean indep = RTCore.getInstance().getCurrentProfile() != null;
 		if(!indep) {
 			uc.speak("I require profile data for this action, please log in.");
 		}

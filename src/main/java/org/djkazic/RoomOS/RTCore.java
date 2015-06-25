@@ -4,21 +4,17 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
 import javax.speech.recognition.RuleGrammar;
 import javax.speech.recognition.RuleParse;
-
 import org.djkazic.RoomOS.basemodules.Module;
 import org.djkazic.RoomOS.basemodules.PersonalizedModule;
 import org.djkazic.RoomOS.modules.AmbienceModule;
 import org.djkazic.RoomOS.modules.SCModule;
 import org.djkazic.RoomOS.sql.ResponseFetcher;
-
 import com.gtranslate.Audio;
 import com.sun.speech.engine.recognition.BaseRecognizer;
 import com.sun.speech.engine.recognition.BaseRuleGrammar;
 import com.sun.syndication.feed.synd.SyndEntry;
-
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.jsgf.JSGFGrammar;
 import edu.cmu.sphinx.recognizer.Recognizer;
@@ -27,30 +23,33 @@ import edu.cmu.sphinx.util.props.ConfigurationManager;
 
 public class RTCore implements Runnable {
 
-	public static List<SyndEntry> alreadyRead;
-	public static ArrayList<Module> modules;
-	public static Connection connection;
-	public static Microphone microphone;
-	public static boolean playingSong;
-	public static CountDownLatch speakLatch;
-	public static Audio audio;
+	public Audio audio;
+	public Connection connection;
+	public RuleGrammar ruleGrammar;
+	public boolean ambientListening;
+	public ArrayList<Module> modules;
+	public CountDownLatch speakLatch;
+	public List<SyndEntry> alreadyRead;
 
-	private static BaseRecognizer jsapiRecognizer;
-	public static boolean ambientListening;
-	private static ConfigurationManager cm;
-	public static RuleGrammar ruleGrammar;
-	private static ArrayList<Profile> profiles;
-	private static Profile currentProfile;
-	private static Recognizer recognizer;
-	private static ResponseFetcher rf;
-	private static Utils uc;
-
+	private Utils uc;
+	private ResponseFetcher rf;
+	private boolean playingSong;
+	private Microphone microphone;
+	private Recognizer recognizer;
+	private Profile currentProfile;
+	private ConfigurationManager cm;
+	private ArrayList<Profile> profiles;
+	private BaseRecognizer jsapiRecognizer;
+	
+	private static RTCore rtcore;
+	
 	/**
 	 * Starter method
 	 * @param args: command line
 	 */
 	public static void main(String[] args) {
-		(new Thread(new RTCore())).start();
+		rtcore = new RTCore();
+		(new Thread(rtcore)).start();
 	}
 
 	/**
@@ -208,12 +207,16 @@ public class RTCore implements Runnable {
 			e.printStackTrace();
 		}
 	}
+	
+	public static RTCore getInstance() {
+		return rtcore;
+	}
 
-	public static ArrayList<Profile> getProfileList() {
+	public ArrayList<Profile> getProfileList() {
 		return profiles;
 	}
 
-	public static void setCurrentProfile(String profName) {
+	public void setCurrentProfile(String profName) {
 		boolean set = false;
 		for(Profile prof : profiles) {
 			if(prof.getName().equalsIgnoreCase(profName)) {
@@ -229,7 +232,7 @@ public class RTCore implements Runnable {
 		}
 	}
 
-	public static Profile getCurrentProfile() {
+	public Profile getCurrentProfile() {
 		return currentProfile;
 	}
 }

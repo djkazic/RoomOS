@@ -15,15 +15,17 @@ public class NewsModule extends PersonalizedModule {
 	private Utils uc;
 	private String type;
 	private String url;
+	private RTCore rt;
 	
 	public NewsModule() {
 		super("cmd_check_news");
 		uc = new Utils();
+		rt = RTCore.getInstance();
 	}
 
 	public void process() {
 		type = "news";
-		url = RTCore.getCurrentProfile().getNewsGeneric();
+		url = rt.getCurrentProfile().getNewsGeneric();
 		determineType();
 		uc.speak("Connecting to online data feeds.");
 		uc.speak("Your top stories today for " + type + ": ");
@@ -38,7 +40,7 @@ public class NewsModule extends PersonalizedModule {
 			
 			for(int i=0; i < allNews.size(); i++) {
 			SyndEntry curEntry = allNews.get(i);
-				if(!RTCore.alreadyRead.contains(curEntry) && counter <= 3) {
+				if(!rt.alreadyRead.contains(curEntry) && counter <= 3) {
 					String entryStr = curEntry.getTitle();
 					
 					if(type.equals("news")) {
@@ -47,7 +49,7 @@ public class NewsModule extends PersonalizedModule {
 					} else {
 						uc.speak(entryStr);
 					}
-					RTCore.alreadyRead.add(allNews.get(i));
+					rt.alreadyRead.add(allNews.get(i));
 					counter++;
 				}
 			}
@@ -62,13 +64,13 @@ public class NewsModule extends PersonalizedModule {
 	private void determineType() {
 		if(resultText.endsWith("finance")) {
 			type = "finance";
-			url = RTCore.getCurrentProfile().getNewsFinance();
+			url = rt.getCurrentProfile().getNewsFinance();
 		} else if(resultText.endsWith("sports")) {
 			type = "sports";
-			url = RTCore.getCurrentProfile().getNewsSports();
+			url = rt.getCurrentProfile().getNewsSports();
 		} else if(resultText.endsWith("tech") || (resultText.endsWith("technology"))) {
 			type = "tech";
-			url = RTCore.getCurrentProfile().getNewsTechnology();
+			url = rt.getCurrentProfile().getNewsTechnology();
 		}
 	}
 }

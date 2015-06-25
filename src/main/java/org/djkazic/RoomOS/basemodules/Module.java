@@ -15,7 +15,7 @@ public abstract class Module implements Runnable {
 	public Module(String trigger) {
 		this.trigger = trigger;
 		latch = new CountDownLatch(1);
-		RTCore.modules.add(this);
+		RTCore.getInstance().modules.add(this);
 	}
 
 	public abstract void process();

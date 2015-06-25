@@ -6,27 +6,28 @@ import org.djkazic.RoomOS.basemodules.Module;
 
 public class AmbienceModule extends Module {
 
+	private RTCore rt;
+	
 	public AmbienceModule() {
 		super("cmd_ambient_activate cmd_ambient_deactivate");
+		rt = RTCore.getInstance();
 	}
 	
 	public void process() {
 		Utils uc = new Utils();
-		if(RTCore.ambientListening && rule.equals("cmd_ambient_deactivate")) {
+		if(rt.ambientListening && rule.equals("cmd_ambient_deactivate")) {
 			uc.speak("Disabling ambient listening");
-			RTCore.ambientListening = false;
+			rt.ambientListening = false;
 			latch.countDown(); //Go back to the main thread, where this will be instantiated again
 			return;
 		}
 		
-		if(!RTCore.ambientListening && rule.equals("cmd_ambient_activate")) {
+		if(!rt.ambientListening && rule.equals("cmd_ambient_activate")) {
 			uc.speak("Enabling ambient listening");
-			RTCore.ambientListening = true;
+			rt.ambientListening = true;
 			latch.countDown(); //Go back to the main thread, where normal behavior resumes
 			return;
 		}
-		
-		//Did not meet either condition
 		latch.countDown();
 	}
 }

@@ -37,7 +37,7 @@ public class LoginModule extends Module {
 			if(index != -1) {
 				load = ruleNames.get(index).substring(3);
 			}
-			RTCore.setCurrentProfile(load);
+			RTCore.getInstance().setCurrentProfile(load);
 			latch.countDown();
 		} catch (Exception e) {
 			e.printStackTrace();
