@@ -44,6 +44,7 @@ public class SCModule extends Module {
 		//TODO: connectivity test, if fail -> local file playback
 		//TODO: mood switch (if local, specify flat_file?playlist? for this -> likely music/mood)
 		if(resume) {
+			resume = false;
 			if(mp3Player != null && pausedOnFrame != 0) {
 				try {
 					bis = new BufferedInputStream(new FileInputStream(buffer));
@@ -83,15 +84,20 @@ public class SCModule extends Module {
 			int rand = (int) (Math.random() * favorites.size());
 			Track streaming = favorites.get(rand);
 			//lastKnownTrack = streaming;
+			streaming = favorites.get(rand);
 			String streamURLStr = streaming.getStreamUrl();
-			while(streamURLStr == null) {
+			while(streaming == null || streamURLStr == null) {
 				rand = (int) (Math.random() * favorites.size());
 				streaming = favorites.get(rand);
 				streamURLStr = streaming.getStreamUrl();
-				System.out.println("Track stream URL was null: " + clean(streaming.getTitle()));
 			}
 			URL streamURL = new URL(streamURLStr);
 			HttpURLConnection hconn = (HttpURLConnection) streamURL.openConnection();
+			buffer = new File("audioBuffer.mp3");
+			
+			if(buffer.exists()) {
+				buffer.delete();
+			}
 			preBuffer(hconn);
 			
 			//URLConnection mp3Con = streamURL.openConnection();
@@ -111,11 +117,6 @@ public class SCModule extends Module {
 				uc.speak("You're listening to: " + uc.firstCaps(split[1]) + " by " + uc.firstCaps(split[0]));
 			} else {
 				uc.speak("You're listening to: " + uc.firstCaps(title));
-			}
-			
-			buffer = new File("audioBuffer.mp3");
-			if(buffer.exists()) {
-				buffer.delete();
 			}
 			
 			bis = new BufferedInputStream(new FileInputStream(buffer));
