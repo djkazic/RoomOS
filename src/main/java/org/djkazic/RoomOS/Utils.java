@@ -1,6 +1,7 @@
 package org.djkazic.RoomOS;
 
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,7 +10,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
-import org.djkazic.RoomOS.modules.Module;
+import org.djkazic.RoomOS.basemodules.Module;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
@@ -76,7 +77,10 @@ public class Utils {
 			Set<BeanDefinition> components = provider.findCandidateComponents("org/djkazic/RoomOS/modules");
 			for (BeanDefinition component : components) {
 			    Class cls = Class.forName(component.getBeanClassName());
-			    cls.getConstructors()[0].newInstance();
+			    Constructor constructor = cls.getConstructors()[0];
+			    if(constructor.getParameterCount() == 0) {
+			    	constructor.newInstance();
+			    }
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
