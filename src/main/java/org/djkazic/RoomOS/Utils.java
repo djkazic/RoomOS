@@ -1,5 +1,8 @@
 package org.djkazic.RoomOS;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.sql.Connection;
@@ -10,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+
+import javazoom.jl.decoder.JavaLayerException;
 
 import org.djkazic.RoomOS.basemodules.Module;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -66,6 +71,20 @@ public class Utils {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void playAudio(String assetName) throws FileNotFoundException {
+		File file = new File("assets/" + assetName);
+		if(!file.exists()) {
+			speak("Attempt to play " + assetName + " failed.");
+		} else {
+			FileInputStream fis = new FileInputStream(file);
+			try {
+				RTCore.audio.play(fis);
+			} catch (JavaLayerException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
