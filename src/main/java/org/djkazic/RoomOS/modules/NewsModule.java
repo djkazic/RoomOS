@@ -6,7 +6,7 @@ import java.util.List;
 import org.djkazic.RoomOS.RTCore;
 import org.djkazic.RoomOS.Settings;
 import org.djkazic.RoomOS.Utils;
-import org.djkazic.RoomOS.modules.bases.Module;
+import org.djkazic.RoomOS.basemodules.Module;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;

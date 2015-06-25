@@ -1,4 +1,4 @@
-package org.djkazic.RoomOS.modules.bases;
+package org.djkazic.RoomOS.basemodules;
 
 import java.util.concurrent.CountDownLatch;
 
