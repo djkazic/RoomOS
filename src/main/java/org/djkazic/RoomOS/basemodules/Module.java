@@ -7,6 +7,7 @@ import org.djkazic.RoomOS.RTCore;
 public abstract class Module implements Runnable {
 
 	protected String trigger;
+	protected String rule;
 	protected boolean exec;
 	protected String resultText;
 	protected CountDownLatch latch;
@@ -30,7 +31,17 @@ public abstract class Module implements Runnable {
 	}
 	
 	public boolean filter(String cmd) {
-		boolean match = (cmd.equals(trigger));
+		boolean match = false;
+		if(trigger.contains(" ")) {
+			String[] split = trigger.split(" ");
+			for(String str : split) {
+				if(str.equals(cmd)) {
+					match = true;
+				}
+			}
+		} else {
+			match = (cmd.equals(trigger));
+		}
 		exec = match;
 		return match;
 	}
@@ -41,5 +52,9 @@ public abstract class Module implements Runnable {
 	
 	public CountDownLatch getLatch() {
 		return latch;
+	}
+	
+	public void setRule(String str) {
+		rule = str;
 	}
 }
