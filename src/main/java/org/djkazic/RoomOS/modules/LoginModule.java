@@ -38,6 +38,7 @@ public class LoginModule extends Module {
 				load = ruleNames.get(index).substring(3);
 			}
 			RTCore.setCurrentProfile(load);
+			latch.countDown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
