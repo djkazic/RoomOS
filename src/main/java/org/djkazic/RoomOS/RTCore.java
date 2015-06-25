@@ -4,19 +4,15 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
 import javax.speech.recognition.RuleGrammar;
 import javax.speech.recognition.RuleParse;
-
 import org.djkazic.RoomOS.modules.Module;
 import org.djkazic.RoomOS.modules.SCModule;
 import org.djkazic.RoomOS.sql.ResponseFetcher;
-
 import com.gtranslate.Audio;
 import com.sun.speech.engine.recognition.BaseRecognizer;
 import com.sun.speech.engine.recognition.BaseRuleGrammar;
 import com.sun.syndication.feed.synd.SyndEntry;
-
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.jsgf.JSGFGrammar;
 import edu.cmu.sphinx.recognizer.Recognizer;
@@ -188,7 +184,7 @@ public class RTCore implements Runnable {
 					uc.speak("I couldn't process that.");
 				}
 				Thread.sleep(100);
-				System.out.println("> LOOP <");
+				//System.out.println("> LOOP <");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
