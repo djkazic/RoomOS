@@ -91,6 +91,7 @@ public class RTCore implements Runnable {
 	 */
 	public void run() {
 		try {
+			boolean firstFlip = true;
 			if(!microphone.startRecording()) {
 				uc.speak("Could not initialize microphone.");
 				recognizer.deallocate();
@@ -103,6 +104,10 @@ public class RTCore implements Runnable {
 			
 			while (true) {
 				if(speakLatch != null) {
+					if(firstFlip) {
+						speakLatch.countDown();
+						firstFlip = false;
+					}
 					speakLatch.await();
 					speakLatch = null;
 				}
@@ -141,8 +146,9 @@ public class RTCore implements Runnable {
 												uc.speak("Music controls disabled.");
 											} else if(rule.endsWith("pause")) {
 												((SCModule) m).stop();
-											} else if(rule.endsWith("replay")) {
-												((SCModule) m).replay();
+											} else if(rule.endsWith("resume")) {
+												((SCModule) m).resume();
+												(new Thread(m)).start();
 											}
 										}
 									}
@@ -169,13 +175,12 @@ public class RTCore implements Runnable {
 														continue;
 													}
 												}
-												Thread mt = new Thread(m);
 												if(m instanceof SCModule) {
 													playingSong = true;
 												} else {
 													m.setText(resultText);
 												}
-												mt.start();
+												(new Thread(m)).start();
 												m.getLatch().await();
 												Thread.sleep(1000);
 												moduleFound = true;
@@ -195,7 +200,7 @@ public class RTCore implements Runnable {
 					uc.speak("I couldn't process that.");
 				}
 				Thread.sleep(100);
-				//System.out.println("> LOOP <");
+				System.out.println("> LOOP <");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -9,11 +9,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
-
 import org.djkazic.RoomOS.Settings;
 import org.djkazic.RoomOS.Utils;
 import org.djkazic.RoomOS.basemodules.Module;
@@ -30,26 +28,53 @@ public class SCModule extends Module {
 	//private Track lastKnownTrack;
 	private int pausedOnFrame = 0;
 	private boolean stopping;
+	private boolean resume;
 	private File buffer;
+	private BufferedInputStream bis;
 
 	public SCModule() {
 		super("cmd_music_gen");
 		sc = new SoundCloud(Settings.getScClient(), Settings.getScSecret());
 		uc = new Utils();
 		stopping = false;
+		resume = false;
 	}
 
 	public void process() {
 		//TODO: connectivity test, if fail -> local file playback
 		//TODO: mood switch (if local, specify flat_file?playlist? for this -> likely music/mood)
-		try {
-			uc.speak("Connecting to SoundCloud.");
-			uc.speak("Pulling your likes list.");
-			favorites = sc.get("/users/114439318/favorites");
-			uc.speak("After looking around, I found this.");
-			findAndPlay();
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(resume) {
+			if(mp3Player != null && pausedOnFrame != 0) {
+				try {
+					bis = new BufferedInputStream(new FileInputStream(buffer));
+					mp3Player = new AdvancedPlayer(bis);
+					mp3Player.setPlayBackListener(new PlaybackListener() {
+						@Override
+						public void playbackFinished(PlaybackEvent event) {
+							pausedOnFrame += event.getFrame() / 27;
+						}
+					});
+					uc.speak("Re entering music.");
+					latch.countDown();
+					mp3Player.play(pausedOnFrame, Integer.MAX_VALUE);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				uc.speak("No music to resume.");
+				System.out.println(mp3Player == null);
+				System.out.println(pausedOnFrame);
+			}
+		} else {
+			try {
+				uc.speak("Connecting to SoundCloud.");
+				uc.speak("Pulling your likes list.");
+				favorites = sc.get("/users/114439318/favorites");
+				uc.speak("After looking around, I found this.");
+				findAndPlay();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -89,12 +114,17 @@ public class SCModule extends Module {
 			}
 			
 			buffer = new File("audioBuffer.mp3");
+			if(buffer.exists()) {
+				buffer.delete();
+			}
+			
+			bis = new BufferedInputStream(new FileInputStream(buffer));
 
-			mp3Player = new AdvancedPlayer(new BufferedInputStream(new FileInputStream(buffer)));
+			mp3Player = new AdvancedPlayer(bis);
 			mp3Player.setPlayBackListener(new PlaybackListener() {
 				@Override
 				public void playbackFinished(PlaybackEvent event) {
-					pausedOnFrame = event.getFrame();
+					pausedOnFrame += event.getFrame() / 27;
 				}
 			});
 			latch.countDown();
@@ -114,7 +144,6 @@ public class SCModule extends Module {
 				buffer.delete();
 				findAndPlay();
 			}
-			buffer.delete();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -123,26 +152,16 @@ public class SCModule extends Module {
 	public void stop() {
 		if(mp3Player != null) {
 			stopping = true;
-			mp3Player.stop();
+			try {
+				mp3Player.stop();
+			} catch (NullPointerException e) {}
 		}
 		uc.speak("Stopping music.");
-		buffer.delete();
 		stopping = false;
 	}
 
-	public void replay() {
-		if(mp3Player == null && pausedOnFrame != 0) {
-			try {
-				mp3Player.play(pausedOnFrame, Integer.MAX_VALUE);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			uc.speak("Re entering music.");
-		} else {
-			uc.speak("No music to resume.");
-			System.out.println(mp3Player == null);
-			System.out.println(pausedOnFrame);
-		}
+	public void resume() {
+		resume = true;
 	}
 	
 	private void preBuffer(final HttpURLConnection httpConn)
@@ -187,6 +206,7 @@ public class SCModule extends Module {
 				  .replace("feat", "featuring")
 				  .replace("ft", "featuring")
 				  .replace("free download", "")
+				  .replace("out now", "")
 				  .replaceAll("\\[|\\]", "");
 	}
 }
