@@ -4,16 +4,21 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+
 import javax.speech.recognition.RuleGrammar;
 import javax.speech.recognition.RuleParse;
+
 import org.djkazic.RoomOS.basemodules.Module;
 import org.djkazic.RoomOS.basemodules.PersonalizedModule;
+import org.djkazic.RoomOS.modules.AmbienceModule;
 import org.djkazic.RoomOS.modules.SCModule;
 import org.djkazic.RoomOS.sql.ResponseFetcher;
+
 import com.gtranslate.Audio;
 import com.sun.speech.engine.recognition.BaseRecognizer;
 import com.sun.speech.engine.recognition.BaseRuleGrammar;
 import com.sun.syndication.feed.synd.SyndEntry;
+
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.jsgf.JSGFGrammar;
 import edu.cmu.sphinx.recognizer.Recognizer;
@@ -31,7 +36,7 @@ public class RTCore implements Runnable {
 	public static Audio audio;
 
 	private static BaseRecognizer jsapiRecognizer;
-	private static boolean ambientListening;
+	public static boolean ambientListening;
 	private static ConfigurationManager cm;
 	public static RuleGrammar ruleGrammar;
 	private static ArrayList<Profile> profiles;
@@ -53,15 +58,15 @@ public class RTCore implements Runnable {
 	 */
 	public RTCore() {
 		try {
-			ambientListening = true;
 			modules = new ArrayList<Module> ();
 			profiles = new ArrayList<Profile> ();
 			alreadyRead = new ArrayList<SyndEntry> ();
+			ambientListening = true;
 
 			rf = new ResponseFetcher();
 			Profile.loadProfiles();
 			currentProfile = null;
-			
+
 			cm = new ConfigurationManager(RTCore.class.getResource("core.xml"));
 			uc = new Utils();
 
@@ -75,11 +80,17 @@ public class RTCore implements Runnable {
 			microphone = (Microphone) cm.lookup("microphone");
 
 			JSGFGrammar jsgf = (JSGFGrammar) cm.lookup("jsgfGrammar");
-			
+
 			jsapiRecognizer = new BaseRecognizer(jsgf.getGrammarManager());
 			jsapiRecognizer.allocate();
-			
+
 			ruleGrammar = new BaseRuleGrammar(jsapiRecognizer, jsgf.getRuleGrammar());
+
+			if(!microphone.startRecording()) {
+				uc.speak("Could not initialize microphone.");
+				recognizer.deallocate();
+				System.exit(1);
+			}
 			uc.speak("Standing by.");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -92,16 +103,11 @@ public class RTCore implements Runnable {
 	public void run() {
 		try {
 			boolean firstFlip = true;
-			if(!microphone.startRecording()) {
-				uc.speak("Could not initialize microphone.");
-				recognizer.deallocate();
-				System.exit(1);
-			}
-			
+
 			//Regular control
 			ArrayList<String> musicControls = new ArrayList<String> ();
 			musicControls = uc.getRuleNames("cmd_music_ctrl");
-			
+
 			while (true) {
 				if(speakLatch != null) {
 					if(firstFlip) {
@@ -109,6 +115,7 @@ public class RTCore implements Runnable {
 						firstFlip = false;
 					}
 					speakLatch.await();
+					Thread.sleep(200);
 					speakLatch = null;
 				}
 				Result result = recognizer.recognize();
@@ -119,18 +126,7 @@ public class RTCore implements Runnable {
 					if(rp != null) {
 						String rule = rp.getRuleName().getRuleName();
 
-						if(!ambientListening) {
-							//Ambient listen reactivation
-							if(rule.equals("cmd_ambient_activate")) {
-								ambientListening = true;
-								uc.speak("Ambient listening now active.");
-							}
-						} else {
-							//TODO: this will be spoken if in SQL response
-							if(rule.equals("cmd_ambient_activate")) {
-								uc.speak("Ambient listening is already active.");
-							}
-							
+						if(ambientListening) {
 							if(playingSong) {
 								if(musicControls.contains(rule)) {
 									if(!resultText.equals("")) {
@@ -144,6 +140,7 @@ public class RTCore implements Runnable {
 												((SCModule) m).stop();
 												playingSong = false;
 												uc.speak("Music controls disabled.");
+												microphone.clear();
 											} else if(rule.endsWith("pause")) {
 												((SCModule) m).stop();
 											} else if(rule.endsWith("resume")) {
@@ -159,39 +156,39 @@ public class RTCore implements Runnable {
 										System.out.println();
 										System.out.println("User said: " + resultText);
 									}
-
-									//Ambient listening plugin
-									boolean isAmbientCmd = rule.equals("cmd_ambient_deactivate");
-									if(isAmbientCmd) {
-										ambientListening = false;
-										uc.speak("Ambient listening deactivated.");
-									} else {
-										boolean moduleFound = false;
-										for(Module m : modules) {
-											if(m.filter(rule)) {
-												if(m instanceof PersonalizedModule) {
-													if(!((PersonalizedModule) m).getIndependentBoolean()) {
-														moduleFound = true;
-														continue;
-													}
+									boolean moduleFound = false;
+									for(Module m : modules) {
+										if(m.filter(rule)) {
+											if(m instanceof PersonalizedModule) {
+												if(!((PersonalizedModule) m).getIndependentBoolean()) {
+													moduleFound = true;
+													continue;
 												}
-												if(m instanceof SCModule) {
-													playingSong = true;
-												} else {
-													m.setText(resultText);
-												}
-												(new Thread(m)).start();
-												m.getLatch().await();
-												Thread.sleep(1000);
-												moduleFound = true;
 											}
-										}
-										
-										if(!moduleFound && !isAmbientCmd) {
-											String speakText = rf.queryForRule(rule);
-											uc.speak(speakText); //Speak DB response
+											if(m instanceof SCModule) {
+												playingSong = true;
+											} else {
+												m.setText(resultText);
+												m.setRule(rule);
+											}
+											(new Thread(m)).start();
+											m.getLatch().await();
+											Thread.sleep(1000);
+											moduleFound = true;
 										}
 									}
+									if(!moduleFound) {
+										String speakText = rf.queryForRule(rule);
+										uc.speak(speakText); //Speak DB response
+									}
+								}
+							}
+						} else {
+							for(Module m : modules) {
+								if(m instanceof AmbienceModule) {
+									m.setRule(rule);
+									(new Thread(m)).start();
+									m.getLatch().await();
 								}
 							}
 						}
@@ -206,11 +203,11 @@ public class RTCore implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static ArrayList<Profile> getProfileList() {
 		return profiles;
 	}
-	
+
 	public static void setCurrentProfile(String profName) {
 		boolean set = false;
 		for(Profile prof : profiles) {
@@ -226,7 +223,7 @@ public class RTCore implements Runnable {
 			uc.speak("Profile logged in successfully. Welcome, " + currentProfile.getName() + ".");
 		}
 	}
-	
+
 	public static Profile getCurrentProfile() {
 		return currentProfile;
 	}
