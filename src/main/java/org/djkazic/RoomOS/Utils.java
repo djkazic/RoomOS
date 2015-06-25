@@ -111,7 +111,7 @@ public class Utils {
 		String output = "";
 		String[] words = str.split(" ");
 		for(int i=0; i < words.length; i++) {
-			if(words[i].startsWith("(") || words[i].startsWith("[")) {
+			if(words[i].startsWith("(") || words[i].startsWith("[") || words[i].startsWith("\"")) {
 				words[i] = words[i].substring(0, 1) + words[i].substring(1, 2).toUpperCase() + words[i].substring(2);
 			} else {
 				words[i] = words[i].substring(0, 1).toUpperCase() + words[i].substring(1);
@@ -120,7 +120,7 @@ public class Utils {
 		for(String word : words) {
 			output += word + " ";
 		}
-		return output;
+		return output.substring(0, output.length() - 1);
 	}
 	
 	public ArrayList<String> getRuleNames(String prefix) {
