@@ -65,7 +65,11 @@ public class Profile implements Serializable {
 				}
 			}
 		}
-		uc.speak(files.length + " profiles loaded.");
+		if(files.length == 1) {
+			uc.speak(files.length + " profile loaded.");
+		} else {
+			uc.speak(files.length + " profiles loaded.");
+		}
 	}
 
 	public static Profile load(File profile) throws ClassNotFoundException, IOException {
