@@ -45,30 +45,6 @@ public class Profile implements Serializable {
 		}
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public String getCallCard() {
-		return callCard;
-	}
-
-	public String getNewsGeneric() {
-		return newsGeneric;
-	}
-
-	public String getNewsFinance() {
-		return newsFinance;
-	}
-
-	public String getNewsSports() {
-		return newsSports;
-	}
-
-	public String getNewsTechnology() {
-		return newsTechnology;
-	}
-
 	/**
 	 * Pulls all known profiles from DB and creates instances of this class for each
 	 */
@@ -108,5 +84,29 @@ public class Profile implements Serializable {
 		ObjectOutputStream os = new ObjectOutputStream(fout);
 		os.writeObject(this);
 		os.close();
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public String getCallCard() {
+		return callCard;
+	}
+
+	public String getNewsGeneric() {
+		return newsGeneric;
+	}
+
+	public String getNewsFinance() {
+		return newsFinance;
+	}
+
+	public String getNewsSports() {
+		return newsSports;
+	}
+
+	public String getNewsTechnology() {
+		return newsTechnology;
 	}
 }

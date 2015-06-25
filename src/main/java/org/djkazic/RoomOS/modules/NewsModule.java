@@ -2,9 +2,7 @@ package org.djkazic.RoomOS.modules;
 
 import java.net.URL;
 import java.util.List;
-
 import org.djkazic.RoomOS.RTCore;
-import org.djkazic.RoomOS.Settings;
 import org.djkazic.RoomOS.Utils;
 import org.djkazic.RoomOS.basemodules.PersonalizedModule;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -25,7 +23,7 @@ public class NewsModule extends PersonalizedModule {
 
 	public void process() {
 		type = "news";
-		url = Settings.newsGeneric;
+		url = RTCore.getCurrentProfile().getNewsGeneric();
 		determineType();
 		uc.speak("Connecting to online data feeds.");
 		uc.speak("Your top stories today for " + type + ": ");
@@ -64,13 +62,13 @@ public class NewsModule extends PersonalizedModule {
 	private void determineType() {
 		if(resultText.endsWith("finance")) {
 			type = "finance";
-			url = Settings.newsFinance;
+			url = RTCore.getCurrentProfile().getNewsFinance();
 		} else if(resultText.endsWith("sports")) {
 			type = "sports";
-			url = Settings.newsSports;
+			url = RTCore.getCurrentProfile().getNewsSports();
 		} else if(resultText.endsWith("tech") || (resultText.endsWith("technology"))) {
 			type = "tech";
-			url = Settings.newsTechnology;
+			url = RTCore.getCurrentProfile().getNewsTechnology();
 		}
 	}
 }
