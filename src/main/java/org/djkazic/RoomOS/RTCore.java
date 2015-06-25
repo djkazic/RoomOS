@@ -97,6 +97,10 @@ public class RTCore implements Runnable {
 				System.exit(1);
 			}
 			
+			//Regular control
+			ArrayList<String> musicControls = new ArrayList<String> ();
+			musicControls = uc.getRuleNames("cmd_music_ctrl");
+			
 			while (true) {
 				if(speakLatch != null) {
 					speakLatch.await();
@@ -122,10 +126,6 @@ public class RTCore implements Runnable {
 								uc.speak("Ambient listening is already active.");
 							}
 							
-							//Regular control
-							ArrayList<String> musicControls = new ArrayList<String> ();
-							musicControls = uc.getRuleNames("cmd_music");
-							
 							if(playingSong) {
 								if(musicControls.contains(rule)) {
 									if(!resultText.equals("")) {
@@ -135,13 +135,13 @@ public class RTCore implements Runnable {
 									//Do pausing or stopping
 									for(Module m : modules) {
 										if(m instanceof SCModule) {
-											if(rule.equals("cmd_music_quit")) {
+											if(rule.endsWith("quit")) {
 												((SCModule) m).stop();
 												playingSong = false;
 												uc.speak("Music controls disabled.");
-											} else if(rule.equals("cmd_music_pause")) {
+											} else if(rule.endsWith("pause")) {
 												((SCModule) m).stop();
-											} else if(rule.equals("cmd_music_replay")) {
+											} else if(rule.endsWith("replay")) {
 												((SCModule) m).replay();
 											}
 										}
@@ -163,6 +163,12 @@ public class RTCore implements Runnable {
 										boolean moduleFound = false;
 										for(Module m : modules) {
 											if(m.filter(rule)) {
+												if(m instanceof PersonalizedModule) {
+													if(!((PersonalizedModule) m).getIndependentBoolean()) {
+														moduleFound = true;
+														continue;
+													}
+												}
 												Thread mt = new Thread(m);
 												if(m instanceof SCModule) {
 													playingSong = true;
@@ -173,10 +179,6 @@ public class RTCore implements Runnable {
 												m.getLatch().await();
 												Thread.sleep(1000);
 												moduleFound = true;
-											} else {
-												if(m instanceof PersonalizedModule) {
-													moduleFound = true;
-												}
 											}
 										}
 										
@@ -216,7 +218,7 @@ public class RTCore implements Runnable {
 			uc.speak("Profile " + profName + " could not be loaded.");
 		} else {
 			//TODO: prompt for PIN
-			uc.speak("Profile logged in successfully. Welcome, " + currentProfile.getName());
+			uc.speak("Profile logged in successfully. Welcome, " + currentProfile.getName() + ".");
 		}
 	}
 	
