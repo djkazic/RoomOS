@@ -84,10 +84,15 @@ public class Utils {
 	}
 	
 	public String firstCaps(String str) {
+		int upperChar = 0;
 	    String[] words = str.split(" ");
 	    StringBuilder ret = new StringBuilder();
 	    for(int i = 0; i < words.length; i++) {
-	        ret.append(Character.toUpperCase(words[i].charAt(0)));
+	    	char firstChar = words[i].charAt(0);
+	    	if(firstChar == '(' || firstChar == '[') {
+	    		upperChar = 1;
+	    	}
+	    	ret.append(Character.toUpperCase(words[i].charAt(upperChar)));
 	        ret.append(words[i].substring(1));
 	        if(i < words.length - 1) {
 	            ret.append(' ');
