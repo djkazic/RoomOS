@@ -108,21 +108,19 @@ public class Utils {
 	}
 	
 	public String firstCaps(String str) {
-		int upperChar = 0;
-	    String[] words = str.split(" ");
-	    StringBuilder ret = new StringBuilder();
-	    for(int i = 0; i < words.length; i++) {
-	    	char firstChar = words[i].charAt(0);
-	    	if(firstChar == '(' || firstChar == '[') {
-	    		upperChar = 1;
-	    	}
-	    	ret.append(Character.toUpperCase(words[i].charAt(upperChar)));
-	        ret.append(words[i].substring(1));
-	        if(i < words.length - 1) {
-	            ret.append(' ');
-	        }
-	    }
-	    return ret.toString();
+		String output = "";
+		String[] words = str.split(" ");
+		for(int i=0; i < words.length; i++) {
+			if(words[i].startsWith("(") || words[i].startsWith("[")) {
+				words[i] = words[i].substring(0, 1) + words[i].substring(1, 2).toUpperCase() + words[i].substring(2);
+			} else {
+				words[i] = words[i].substring(0, 1).toUpperCase() + words[i].substring(1);
+			}
+		}
+		for(String word : words) {
+			output += word + " ";
+		}
+		return output;
 	}
 	
 	public ArrayList<String> getRuleNames(String prefix) {
