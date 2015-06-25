@@ -29,12 +29,14 @@ public class SCModule extends Module {
 	private ArrayList<Track> favorites;
 	//private Track lastKnownTrack;
 	private int pausedOnFrame = 0;
+	private boolean stopping;
 	private File buffer;
 
 	public SCModule() {
 		super("cmd_music_gen");
 		sc = new SoundCloud(Settings.getScClient(), Settings.getScSecret());
 		uc = new Utils();
+		stopping = false;
 	}
 
 	public void process() {
@@ -106,7 +108,7 @@ public class SCModule extends Module {
 				uc.speak("Music controls disabled.");
 			}
 			favorites.remove(streaming);
-			if(mp3Player != null && favorites.size() > 0) {
+			if(!stopping && favorites.size() > 0) {
 				uc.speak("Advancing song.");
 				pausedOnFrame = 0;
 				buffer.delete();
@@ -120,11 +122,12 @@ public class SCModule extends Module {
 
 	public void stop() {
 		if(mp3Player != null) {
+			stopping = true;
 			mp3Player.stop();
-			mp3Player = null;
 		}
 		uc.speak("Stopping music.");
 		buffer.delete();
+		stopping = false;
 	}
 
 	public void replay() {
@@ -183,6 +186,7 @@ public class SCModule extends Module {
 				  .replace("&", "and")
 				  .replace("feat", "featuring")
 				  .replace("ft", "featuring")
+				  .replace("free download", "")
 				  .replaceAll("\\[|\\]", "");
 	}
 }
