@@ -81,13 +81,12 @@ public class RTCore implements Runnable {
 			jsapiRecognizer.allocate();
 
 			ruleGrammar = new BaseRuleGrammar(jsapiRecognizer, jsgf.getRuleGrammar());
-
+			uc.speak("Standing by.");
+			
 			if(!microphone.startRecording()) {
 				uc.speak("Could not initialize microphone.");
-				recognizer.deallocate();
 				System.exit(1);
 			}
-			uc.speak("Standing by.");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
