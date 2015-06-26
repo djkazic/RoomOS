@@ -52,10 +52,7 @@ public class RTCore implements Runnable {
 		(new Thread(rtcore)).start();
 	}
 
-	/**
-	 * Default constructor
-	 */
-	public RTCore() {
+	public void init() {
 		try {
 			modules = new ArrayList<Module> ();
 			profiles = new ArrayList<Profile> ();
@@ -100,6 +97,7 @@ public class RTCore implements Runnable {
 	 * Main threaded method - processes recognition
 	 */
 	public void run() {
+		init();
 		try {
 			boolean firstFlip = true;
 
@@ -201,7 +199,7 @@ public class RTCore implements Runnable {
 				} else {
 					Thread.sleep(100);
 				}
-				System.out.println("> LOOP <");
+				//System.out.println("> LOOP <");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
