@@ -11,18 +11,20 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 
 import javazoom.jl.decoder.JavaLayerException;
 
 import org.djkazic.RoomOS.basemodules.Module;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AssignableTypeFilter;
+import org.djkazic.RoomOS.modules.AmbienceModule;
+import org.djkazic.RoomOS.modules.EEModule;
+import org.djkazic.RoomOS.modules.LoginModule;
+import org.djkazic.RoomOS.modules.NewsModule;
+import org.djkazic.RoomOS.modules.SCModule;
 
 import com.gtranslate.Audio;
 import com.gtranslate.Language;
+import com.openpojo.reflection.PojoClass;
+import com.openpojo.reflection.impl.PojoClassFactory;
 
 public class Utils {
 
@@ -74,7 +76,6 @@ public class Utils {
 			if(rt.microphone != null && rt.microphone.isRecording()) {
 				rt.microphone.stopRecording();
 			}
-			System.out.println("latched");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -94,19 +95,14 @@ public class Utils {
 		}
 	}
 	
-	@SuppressWarnings("rawtypes")
 	public void findModules() {
 		try {
-			ClassPathScanningCandidateComponentProvider provider 
-			= new ClassPathScanningCandidateComponentProvider(false);
-			provider.addIncludeFilter(new AssignableTypeFilter(Module.class));
-			Set<BeanDefinition> components = provider.findCandidateComponents("org/djkazic/RoomOS/modules");
-			for (BeanDefinition component : components) {
-			    Class cls = Class.forName(component.getBeanClassName());
-			    Constructor constructor = cls.getConstructors()[0];
-			    if(constructor.getParameterCount() == 0) {
-			    	constructor.newInstance();
-			    }
+			for(PojoClass pojoClass : PojoClassFactory
+									  .enumerateClassesByExtendingType("org.djkazic.RoomOS.modules", Module.class, null)) {
+				Constructor<?> con = pojoClass.getClazz().getConstructors()[0];
+				if(con.getParameterCount() == 0) {
+					con.newInstance();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
