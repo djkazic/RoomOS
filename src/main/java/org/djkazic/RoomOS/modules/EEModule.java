@@ -14,8 +14,10 @@ public class EEModule extends Module {
 	public void process() {
 		Utils uc = new Utils();
 		String asset = "";
-		if(resultText.contains("wish me")) {
+		if(resultText.startsWith("wish me")) {
 			asset = "fathersday";
+		} else if(resultText.startsWith("motivate me")) {
+			asset = "motivation";
 		}
 		try {
 			uc.playAudio(asset);

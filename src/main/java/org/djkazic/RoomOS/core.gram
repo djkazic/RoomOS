@@ -6,11 +6,11 @@ grammar core;
 	public <cmd_music_mood> = [<id>] (set the mood | turn the lights down [low]);
 	public <cmd_check_email> = [<id>] (see if there are | check for) [any] new emails;
 	public <cmd_check_news> = [<id>] (whats on the | [is there] any [new] | check the) news [on | for] [finance | sports | tech | technology];
-	public <cmd_login> = <id> (authenticate | log me in);
+	public <cmd_login> = <id> (log me in);
 	
 //Ambient controls
-	public <cmd_ambient_activate> = [<id>] (enable listening | resume monitoring);
-	public <cmd_ambient_deactivate> = [<id>] (stop listening | take a break);
+	public <cmd_ambient_activate> = [<id>] (re enable listening | resume monitoring);
+	public <cmd_ambient_deactivate> = [<id>] ((quit | stop) listening | take a break);
 	
 //Music commands
 	public <cmd_music_ctrl_quit> = quit audio;
@@ -23,12 +23,12 @@ grammar core;
 	public <personality_phones> = [<id>] [do you like] (apple | android) phones or (apple | android) phones;
 	
 //Easter eggs
-	public <ee> = [<id>] (wish me a happy fathers day);
+	public <ee> = [<id>] (wish me a happy fathers day | motivate me);
 
 //Greet subcomponent (private)
 <greet> = hello | hey;
 	<id> = <greet> (<id_kevin> | <id_cam>) [<filter_polite>];
-		<id_kevin> = ava;
+		<id_kevin> = amber;
 		<id_cam> = test;
 		<filter_polite> = please | could you;
 		
