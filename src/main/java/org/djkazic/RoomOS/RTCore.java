@@ -54,6 +54,9 @@ public class RTCore implements Runnable {
 
 	public void init() {
 		try {
+			//Set logger
+			System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
+			
 			modules = new ArrayList<Module> ();
 			profiles = new ArrayList<Profile> ();
 			alreadyRead = new ArrayList<SyndEntry> ();
