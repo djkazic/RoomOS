@@ -25,6 +25,7 @@ public class RTCore implements Runnable {
 
 	public Audio audio;
 	public Connection connection;
+	public Microphone microphone;
 	public RuleGrammar ruleGrammar;
 	public boolean ambientListening;
 	public ArrayList<Module> modules;
@@ -34,7 +35,6 @@ public class RTCore implements Runnable {
 	private Utils uc;
 	private ResponseFetcher rf;
 	private boolean playingSong;
-	private Microphone microphone;
 	private Recognizer recognizer;
 	private Profile currentProfile;
 	private ConfigurationManager cm;
@@ -99,22 +99,14 @@ public class RTCore implements Runnable {
 	public void run() {
 		init();
 		try {
-			boolean firstFlip = true;
-
 			//Regular control
 			ArrayList<String> musicControls = new ArrayList<String> ();
 			musicControls = uc.getRuleNames("cmd_music_ctrl");
 
 			while (true) {
-				if(speakLatch != null) {
-					if(firstFlip) {
-						firstFlip = false;
-						speakLatch.countDown();
-					} else {
-						speakLatch.await();
-						Thread.sleep(200);
-						speakLatch = null;
-					}
+				if(!microphone.isRecording()) {
+					microphone.clear();
+					microphone.startRecording();
 				}
 				Result result = recognizer.recognize();
 				if(result != null) {
@@ -169,9 +161,11 @@ public class RTCore implements Runnable {
 												m.setText(resultText);
 												m.setRule(rule);
 											}
+											microphone.stopRecording();
 											(new Thread(m)).start();
 											m.getLatch().await();
 											Thread.sleep(1000);
+											//TODO: may have to set result to null
 											moduleFound = true;
 										}
 									}
@@ -192,7 +186,8 @@ public class RTCore implements Runnable {
 						}
 					}
 				} else {
-					uc.speak("I couldn't process that.");
+					System.out.println("Discarded loop");
+					//uc.speak("I couldn't process that.");
 				}
 				if(playingSong) {
 					Thread.sleep(200);

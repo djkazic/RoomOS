@@ -71,10 +71,10 @@ public class Utils {
 			//TODO: check for cached streams
 			InputStream sound = rt.audio.getAudio(str, Language.ENGLISH);
 			rt.audio.play(sound);
-			if(rt.speakLatch == null) {
-				rt.speakLatch = new CountDownLatch(1);
-				rt.speakLatch.countDown();
+			if(rt.microphone != null && rt.microphone.isRecording()) {
+				rt.microphone.stopRecording();
 			}
+			System.out.println("latched");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
