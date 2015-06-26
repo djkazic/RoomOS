@@ -29,9 +29,7 @@ public class Utils {
 	private RTCore rt;
 	
 	public Utils() {
-		if(rt == null) {
-			rt = RTCore.getInstance();
-		}
+		rt = RTCore.getInstance();
 	}
 
 	public Connection getConnection() {
