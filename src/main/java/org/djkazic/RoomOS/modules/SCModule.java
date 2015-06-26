@@ -3,15 +3,18 @@ package org.djkazic.RoomOS.modules;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
+
 import org.djkazic.RoomOS.Settings;
 import org.djkazic.RoomOS.Utils;
 import org.djkazic.RoomOS.basemodules.Module;
@@ -147,6 +150,9 @@ public class SCModule extends Module {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			if(e instanceof FileNotFoundException) {
+				uc.speak("Audio buffer could not be found. Check your network connection.");
+			}
 		}
 	}
 
