@@ -153,6 +153,7 @@ public class SCModule extends Module {
 			if(e instanceof FileNotFoundException) {
 				uc.speak("Audio buffer could not be found. Check your network connection.");
 			}
+			latch.countDown();
 		}
 	}
 
