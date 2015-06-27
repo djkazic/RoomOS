@@ -90,8 +90,6 @@ public class SCModule extends Module {
 		try {
 			//int rand = (int) (Math.random() * favorites.size());
 			Track streaming = trackPool.get(0);
-			
-			System.out.println("null check for sc: " + (sc == null));
 			String streamURLStr = streaming.getStreamUrl(sc);
 			URL streamURL = new URL(streamURLStr);
 			HttpURLConnection hconn = (HttpURLConnection) streamURL.openConnection();
@@ -109,9 +107,6 @@ public class SCModule extends Module {
 			//BufferedInputStream bis = new BufferedInputStream(playStream);
 			
 			String title = clean(streaming.getTitle());
-			
-			System.out.println("Dirty title: " + streaming.getTitle());
-			System.out.println("Clean title: " + clean(streaming.getTitle()));
 			
 			//Smart formatting of titling
 			if(title.contains(" - ")) {
