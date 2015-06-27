@@ -24,7 +24,6 @@ public class Track {
 	private Integer label_id;
 	private String label_name;
 	private String isrc;
-	private String video_url;
 	private String track_type;
 	private String key_signature;
 	private String bpm;
@@ -150,10 +149,6 @@ public class Track {
 		return isrc;
 	}
 
-	public String getVideoUrl() {
-		return video_url;
-	}
-
 	public String getTrackType() {
 		return track_type;
 	}
@@ -254,7 +249,7 @@ public class Track {
 				+ ", downloadable=" + downloadable + ", genre=" + genre
 				+ ", release=" + release + ", purchase_url=" + purchase_url
 				+ ", label_id=" + label_id + ", label_name=" + label_name
-				+ ", isrc=" + isrc + ", video_url=" + video_url
+				+ ", isrc=" + isrc
 				+ ", track_type=" + track_type + ", key_signature="
 				+ key_signature + ", bpm=" + bpm + ", title=" + title
 				+ ", release_year=" + release_year + ", release_month="
