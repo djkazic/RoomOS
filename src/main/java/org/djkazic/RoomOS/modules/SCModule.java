@@ -18,16 +18,15 @@ import javazoom.jl.player.advanced.PlaybackListener;
 import org.djkazic.RoomOS.Settings;
 import org.djkazic.RoomOS.Utils;
 import org.djkazic.RoomOS.basemodules.Module;
-
-import de.voidplus.soundcloud.SoundCloud;
-import de.voidplus.soundcloud.Track;
+import org.djkazic.RoomOS.sc.SoundCloud;
+import org.djkazic.RoomOS.sc.Track;
 
 public class SCModule extends Module {
 
 	private Utils uc;
 	private SoundCloud sc;
 	private AdvancedPlayer mp3Player;
-	private ArrayList<Track> favorites;
+	private ArrayList<Track> trackPool;
 	//private Track lastKnownTrack;
 	private int pausedOnFrame = 0;
 	private boolean stopping;
@@ -36,8 +35,7 @@ public class SCModule extends Module {
 	private BufferedInputStream bis;
 
 	public SCModule() {
-		super("cmd_music_gen");
-		sc = new SoundCloud(Settings.getScClient(), Settings.getScSecret());
+		super("cmd_music_gen cmd_music_mood");
 		uc = new Utils();
 		stopping = false;
 		resume = false;
@@ -72,8 +70,14 @@ public class SCModule extends Module {
 		} else {
 			try {
 				uc.speak("Connecting to SoundCloud.");
-				uc.speak("Pulling your likes list.");
-				favorites = sc.get("/users/114439318/favorites");
+				sc = new SoundCloud(Settings.getScClient(), Settings.getScSecret());
+				if(rule.equals("cmd_music_mood")) {
+					uc.speak("Pulling mood playlist data.");
+					trackPool = sc.getPlaylist(116954687).getTracks();
+				} else {
+					uc.speak("Pulling your likes list.");
+					trackPool = sc.get("/users/114439318/favorites");
+				}
 				uc.speak("After looking around, I found this.");
 				findAndPlay();
 			} catch (Exception e) {
@@ -84,16 +88,11 @@ public class SCModule extends Module {
 
 	private void findAndPlay() {
 		try {
-			int rand = (int) (Math.random() * favorites.size());
-			Track streaming = favorites.get(rand);
-			//lastKnownTrack = streaming;
-			streaming = favorites.get(rand);
-			String streamURLStr = streaming.getStreamUrl();
-			while(streaming == null || streamURLStr == null) {
-				rand = (int) (Math.random() * favorites.size());
-				streaming = favorites.get(rand);
-				streamURLStr = streaming.getStreamUrl();
-			}
+			//int rand = (int) (Math.random() * favorites.size());
+			Track streaming = trackPool.get(0);
+			
+			System.out.println("null check for sc: " + (sc == null));
+			String streamURLStr = streaming.getStreamUrl(sc);
 			URL streamURL = new URL(streamURLStr);
 			HttpURLConnection hconn = (HttpURLConnection) streamURL.openConnection();
 			buffer = new File("audioBuffer.mp3");
@@ -141,8 +140,8 @@ public class SCModule extends Module {
 				stop();
 				uc.speak("Music controls disabled.");
 			}
-			favorites.remove(streaming);
-			if(!stopping && favorites.size() > 0) {
+			trackPool.remove(streaming);
+			if(!stopping && trackPool.size() > 0) {
 				uc.speak("Advancing song.");
 				pausedOnFrame = 0;
 				buffer.delete();
