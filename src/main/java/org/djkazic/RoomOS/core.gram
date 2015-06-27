@@ -42,7 +42,7 @@ grammar core;
 
 //Time subcomponent
 <time> = <hours> <minutes> (p | a) m;
-<hours> = <incr> | <special>;
+<hours> = <incr> | <spec_t>;
 <minutes> = oh <incr> | <spec_t> | thirteen | fourteen | fifteen | sixteen 
 		  | seventeen | eighteen | nineteen | twenty | twenty [<incr>] 
 		  | thirty [<incr>] | forty [<incr>] | fifty [<incr>] | oh clock;
