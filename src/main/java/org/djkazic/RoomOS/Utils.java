@@ -66,18 +66,20 @@ public class Utils {
 	
 	public void speak(String str) {
 		System.out.println("> " + str);
-		if(rt.audio == null) {
-			getAudio();
-		}
-		try {
-			//TODO: check for cached streams
-			InputStream sound = rt.audio.getAudio(str, Language.ENGLISH);
-			rt.audio.play(sound);
-			if(rt.microphone != null && rt.microphone.isRecording()) {
-				rt.microphone.stopRecording();
+		if(Settings.vocal) {
+			if(rt.audio == null) {
+				getAudio();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			try {
+				//TODO: check for cached streams
+				InputStream sound = rt.audio.getAudio(str, Language.ENGLISH);
+				rt.audio.play(sound);
+				if(rt.microphone != null && rt.microphone.isRecording()) {
+					rt.microphone.stopRecording();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
