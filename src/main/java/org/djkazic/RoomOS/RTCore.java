@@ -151,10 +151,9 @@ public class RTCore implements Runnable {
 											}
 											if(m instanceof SCModule) {
 												playingSong = true;
-											} else {
-												m.setText(resultText);
-												m.setRule(rule);
-											}
+											} 
+											m.setText(resultText);
+											m.setRule(rule);		
 											microphone.stopRecording();
 											(new Thread(m)).start();
 											m.getLatch().await();
