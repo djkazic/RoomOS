@@ -85,11 +85,6 @@ public class RTCore implements Runnable {
 
 			ruleGrammar = new BaseRuleGrammar(jsapiRecognizer, jsgf.getRuleGrammar());
 			uc.speak("Standing by.");
-			
-			if(!microphone.startRecording()) {
-				uc.speak("Could not initialize microphone.");
-				System.exit(1);
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -106,10 +101,7 @@ public class RTCore implements Runnable {
 			musicControls = uc.getRuleNames("cmd_music_ctrl");
 
 			while (true) {
-				if(!microphone.isRecording()) {
-					microphone.clear();
-					microphone.startRecording();
-				}
+
 				Result result = recognizer.recognize();
 				if(result != null) {
 					String resultText = result.getBestFinalResultNoFiller();
@@ -188,7 +180,7 @@ public class RTCore implements Runnable {
 						}
 					}
 				} else {
-					System.out.println("Discarded loop");
+					//System.out.println("Discarded loop");
 					//uc.speak("I couldn't process that.");
 				}
 				if(playingSong) {
