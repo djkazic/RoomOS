@@ -16,34 +16,40 @@ public class AlarmRunnable implements Runnable {
 	}
 
 	public void run() {
-		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
-		
-		while(alarms.size() > 0) {
-			String selected = "";
-			boolean breakNow = false;
-			while(!breakNow) {
-				try {
-					current = new Date();
-					String currentStr = sdf.format(current);
-					for(String str : alarms) {
-						breakNow = (str.equals(currentStr));
-						selected = str;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
+			
+			while(alarms.size() > 0) {
+				System.out.println("outer loop hit");
+				
+				String selected = "";
+				boolean breakNow = false;
+				String currentStr = "";
+				
+				while(!breakNow) {
+					try {
+						current = new Date();
+						currentStr = sdf.format(current);
+						breakNow = alarms.contains(currentStr);
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
+
+				selected = currentStr;
+				Utils uc = new Utils();
+				String[] split = selected.split(" ");
+				String timeColon = split[1];
+				String[] csplit = timeColon.split(":");
+				String hour = csplit[0];
+				String minute = csplit[1];
+
+				uc.speak("Alarm set at " + hour + ":" + minute + " has been triggered.");
+				alarms.remove(selected);
 			}
-
-			Utils uc = new Utils();
-			String[] split = selected.split(" ");
-			String timeColon = split[1];
-			String[] csplit = timeColon.split(":");
-			String hour = csplit[0];
-			String minute = csplit[1];
-
-			uc.speak("Alarm set at " + hour + ":" + minute + " has been triggered.");
-			alarms.remove(selected);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
