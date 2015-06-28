@@ -5,7 +5,7 @@ grammar core;
 	public <cmd_music_gen> = [<id>] (find me | play | put on) [a] (song | track | music) [<exp_enjoy>];
 	public <cmd_music_mood> = [<id>] (set the mood | turn the lights down [low]);
 	public <cmd_check_email> = [<id>] (see if there are | check for) [any] new emails;
-	public <cmd_check_news> = [<id>] (whats on the | [is there] any [new] | check the) news [on | for] [<news_list>];
+	public <cmd_check_news> = [<id>] (whats on the | [is there] any [new] | check the) news [in | on | for] [<news_list>];
 	public <cmd_alarm> = [<id>] set an alarm at <time>;
 	public <cmd_login> = <id> (log me in);
 	
@@ -38,7 +38,7 @@ grammar core;
 <exp_pos> = like | enjoy;
 
 //News list
-<news_list> = finance | sports | tech | technology;
+<news_list> = general | finance | sports | tech | technology;
 
 //Time subcomponent
 <time> = <hours> <minutes> (p | a) m;
