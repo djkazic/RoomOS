@@ -2,8 +2,8 @@ package org.djkazic.RoomOS.modules;
 
 import java.io.FileNotFoundException;
 
-import org.djkazic.RoomOS.Utils;
 import org.djkazic.RoomOS.basemodules.Module;
+import org.djkazic.RoomOS.util.Utils;
 
 public class EEModule extends Module {
 

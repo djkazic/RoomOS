@@ -1,4 +1,4 @@
-package org.djkazic.RoomOS;
+package org.djkazic.RoomOS.util;
 
 public class MyBase64 {
 

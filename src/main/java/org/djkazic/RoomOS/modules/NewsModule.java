@@ -2,9 +2,11 @@ package org.djkazic.RoomOS.modules;
 
 import java.net.URL;
 import java.util.List;
+
 import org.djkazic.RoomOS.RTCore;
-import org.djkazic.RoomOS.Utils;
 import org.djkazic.RoomOS.basemodules.PersonalizedModule;
+import org.djkazic.RoomOS.util.Utils;
+
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;

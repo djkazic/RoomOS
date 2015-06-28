@@ -15,11 +15,11 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 
-import org.djkazic.RoomOS.Settings;
-import org.djkazic.RoomOS.Utils;
 import org.djkazic.RoomOS.basemodules.Module;
 import org.djkazic.RoomOS.sc.SoundCloud;
 import org.djkazic.RoomOS.sc.Track;
+import org.djkazic.RoomOS.util.Settings;
+import org.djkazic.RoomOS.util.Utils;
 
 public class SCModule extends Module {
 

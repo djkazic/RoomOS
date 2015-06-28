@@ -1,7 +1,7 @@
 package org.djkazic.RoomOS.basemodules;
 
 import org.djkazic.RoomOS.RTCore;
-import org.djkazic.RoomOS.Utils;
+import org.djkazic.RoomOS.util.Utils;
 
 public abstract class PersonalizedModule extends Module {
 	

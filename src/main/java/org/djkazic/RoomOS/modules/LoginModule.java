@@ -3,8 +3,8 @@ package org.djkazic.RoomOS.modules;
 import java.util.ArrayList;
 
 import org.djkazic.RoomOS.RTCore;
-import org.djkazic.RoomOS.Utils;
 import org.djkazic.RoomOS.basemodules.Module;
+import org.djkazic.RoomOS.util.Utils;
 
 public class LoginModule extends Module {
 	

@@ -8,6 +8,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import org.djkazic.RoomOS.util.Utils;
+
 public class Profile implements Serializable {
 
 	private static final long serialVersionUID = 3023409294303024485L;
