@@ -4,22 +4,19 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
 import javax.speech.recognition.RuleGrammar;
 import javax.speech.recognition.RuleParse;
-
 import org.djkazic.RoomOS.basemodules.Module;
 import org.djkazic.RoomOS.basemodules.PersonalizedModule;
 import org.djkazic.RoomOS.modules.AmbienceModule;
 import org.djkazic.RoomOS.modules.SCModule;
+import org.djkazic.RoomOS.rest.APIRouter;
 import org.djkazic.RoomOS.sql.ResponseFetcher;
 import org.djkazic.RoomOS.util.Utils;
-
 import com.gtranslate.Audio;
 import com.sun.speech.engine.recognition.BaseRecognizer;
 import com.sun.speech.engine.recognition.BaseRuleGrammar;
 import com.sun.syndication.feed.synd.SyndEntry;
-
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.jsgf.JSGFGrammar;
 import edu.cmu.sphinx.recognizer.Recognizer;
@@ -59,8 +56,6 @@ public class RTCore implements Runnable {
 
 	public void init() {
 		try {
-			//Set logger
-			System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
 			
 			modules = new ArrayList<Module> ();
 			profiles = new ArrayList<Profile> ();
@@ -89,6 +84,10 @@ public class RTCore implements Runnable {
 			jsapiRecognizer.allocate();
 
 			ruleGrammar = new BaseRuleGrammar(jsapiRecognizer, jsgf.getRuleGrammar());
+
+			uc.speak("REST API interface initialized.");
+			APIRouter.init();
+			
 			uc.speak("Standing by.");
 		} catch (Exception e) {
 			e.printStackTrace();
