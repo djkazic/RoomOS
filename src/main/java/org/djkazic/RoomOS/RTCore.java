@@ -85,8 +85,8 @@ public class RTCore implements Runnable {
 
 			ruleGrammar = new BaseRuleGrammar(jsapiRecognizer, jsgf.getRuleGrammar());
 
-			uc.speak("REST API interface initialized.");
 			APIRouter.init();
+			uc.speak("REST API interface initialized.");
 			
 			uc.speak("Standing by.");
 		} catch (Exception e) {

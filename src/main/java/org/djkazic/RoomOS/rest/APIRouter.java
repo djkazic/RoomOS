@@ -13,11 +13,11 @@ public class APIRouter extends Application {
 
 	public static void init() {
 		try {
-			LogManager.getLogManager().reset();
 			Component component = new Component();
 			component.getServers().add(Protocol.HTTP, 8080);
 			component.getDefaultHost().attach(new APIRouter());
 			component.start();
+			LogManager.getLogManager().reset();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
