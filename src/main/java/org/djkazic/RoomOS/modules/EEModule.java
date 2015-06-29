@@ -20,7 +20,9 @@ public class EEModule extends Module {
 			asset = "motivation";
 		}
 		try {
-			uc.playAudio(asset);
+			if(!asset.equals("")) {
+				uc.playAudio(asset);
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
