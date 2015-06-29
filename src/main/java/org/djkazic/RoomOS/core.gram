@@ -24,12 +24,12 @@ grammar core;
 	public <personality_phones> = [<id>] [do you like] (apple | android) phones or (apple | android) phones;
 	
 //Easter eggs
-	public <ee> = [<id>] (wish me a happy fathers day | motivate me);
+	public <ee> = [<id>] (wish me a happy fathers day | motivate me | I love you);
 
 //Greet subcomponent (private)
-<greet> = hello | hey;
+<greet> = hi;
 	<id> = <greet> (<id_kevin> | <id_cam>) [<filter_polite>];
-		<id_kevin> = amber;
+		<id_kevin> = ayden;
 		<id_cam> = test;
 		<filter_polite> = please | could you;
 		
