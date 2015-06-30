@@ -24,6 +24,7 @@ public class MainWindow extends JFrame {
 	private CountDownLatch blacked;
 	private boolean alwaysOn = true;
     private boolean fadeIn = false;
+    private long lastSetGifTime = 0L;
 
 	/**
 	 * Create the frame.
@@ -96,9 +97,19 @@ public class MainWindow extends JFrame {
 		String path = "assets/imgres/" + imageName + ".gif";
 		File testImage = new File(path);
 		if(testImage.exists()) {
-			ImageIcon testII = new ImageIcon(path);
-			changeGif(testII);
-			return true;
+			if(lastSetGifTime + 1000L > System.currentTimeMillis()) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				lastSetGifTime = System.currentTimeMillis();
+				return false;
+			} else {
+				ImageIcon testII = new ImageIcon(path);
+				changeGif(testII);
+				return true;
+			}
 		}
 		return false;
 	}

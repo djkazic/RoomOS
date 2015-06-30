@@ -81,7 +81,6 @@ public class SCModule extends Module {
 		} else {
 			try {
 				if(Settings.gui) {
-					Thread.sleep(1000);
 					RTCore.getWindow().setLoop("connecting");
 				}
 				uc.speak("Connecting to SoundCloud.");
