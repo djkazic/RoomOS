@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.djkazic.RoomOS.RTCore;
 import org.djkazic.RoomOS.basemodules.Module;
+import org.djkazic.RoomOS.util.Settings;
 import org.djkazic.RoomOS.util.Utils;
 
 public class LoginModule extends Module {
@@ -17,6 +18,10 @@ public class LoginModule extends Module {
 
 	public void process() {
 		try {
+			if(Settings.gui) {
+				RTCore.getWindow().setLoop("profiles");
+			}
+			
 			ArrayList<String> ruleNames = new ArrayList<String> ();
 			ArrayList<String> authNames = new ArrayList<String> ();
 			ruleNames = uc.getRuleNames("id_");
