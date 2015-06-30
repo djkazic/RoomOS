@@ -103,13 +103,10 @@ public class MainWindow extends JFrame {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				lastSetGifTime = System.currentTimeMillis();
-				return false;
-			} else {
-				ImageIcon testII = new ImageIcon(path);
-				changeGif(testII);
-				return true;
 			}
+			ImageIcon testII = new ImageIcon(path);
+			changeGif(testII);
+			return true;
 		}
 		return false;
 	}
