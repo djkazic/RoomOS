@@ -4,19 +4,28 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.speech.recognition.RuleGrammar;
 import javax.speech.recognition.RuleParse;
+
 import org.djkazic.RoomOS.basemodules.Module;
 import org.djkazic.RoomOS.basemodules.PersonalizedModule;
+import org.djkazic.RoomOS.gui.MainWindow;
 import org.djkazic.RoomOS.modules.AmbienceModule;
 import org.djkazic.RoomOS.modules.SCModule;
 import org.djkazic.RoomOS.rest.APIRouter;
 import org.djkazic.RoomOS.sql.ResponseFetcher;
+import org.djkazic.RoomOS.util.Settings;
 import org.djkazic.RoomOS.util.Utils;
+
 import com.gtranslate.Audio;
 import com.sun.speech.engine.recognition.BaseRecognizer;
 import com.sun.speech.engine.recognition.BaseRuleGrammar;
 import com.sun.syndication.feed.synd.SyndEntry;
+
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.jsgf.JSGFGrammar;
 import edu.cmu.sphinx.recognizer.Recognizer;
@@ -37,6 +46,7 @@ public class RTCore implements Runnable {
 	private Utils uc;
 	private ResponseFetcher rf;
 	private boolean playingSong;
+	private static MainWindow mainWindow;
 	private Recognizer recognizer;
 	private Profile currentProfile;
 	private ConfigurationManager cm;
@@ -56,22 +66,54 @@ public class RTCore implements Runnable {
 
 	public void init() {
 		try {
+			Logger globalLogger = Logger.getLogger("");
+			Handler[] handlers = globalLogger.getHandlers();
+			for(Handler handler : handlers) {
+			    handler.setLevel(Level.OFF);
+			}
 			
+			uc = new Utils();
 			modules = new ArrayList<Module> ();
 			profiles = new ArrayList<Profile> ();
 			alreadyRead = new ArrayList<SyndEntry> ();
+			
 			ambientListening = true;
 
+			if(Settings.gui) {
+				mainWindow = new MainWindow();
+				uc.speak("Initializing user interface.");
+			}
+			
+			if(Settings.gui) {
+				mainWindow.setLoop("database");
+			}
 			rf = new ResponseFetcher();
+
 			Profile.loadProfiles();
 			currentProfile = null;
 
 			cm = new ConfigurationManager(RTCore.class.getResource("core.xml"));
-			uc = new Utils();
-
+	
+			if(Settings.gui) {
+				mainWindow.setLoop("recognition");
+			}
 			uc.speak("Recognition subsystem online.");
+			
+			if(Settings.gui) {
+				mainWindow.setLoop("modules");
+			}
 			uc.speak("Loading process modules.");
 			uc.findModules();
+			
+			if(Settings.gui) {
+				mainWindow.setLoop("rest");
+			}
+			APIRouter.init();
+			uc.speak("REST API interface initialized.");
+			
+			if(Settings.gui) {
+				mainWindow.setLoop("idle");
+			}
 
 			recognizer = (Recognizer) cm.lookup("recognizer");
 			recognizer.allocate();
@@ -84,9 +126,6 @@ public class RTCore implements Runnable {
 			jsapiRecognizer.allocate();
 
 			ruleGrammar = new BaseRuleGrammar(jsapiRecognizer, jsgf.getRuleGrammar());
-
-			APIRouter.init();
-			uc.speak("REST API interface initialized.");
 			
 			uc.speak("Standing by.");
 		} catch (Exception e) {
@@ -161,6 +200,7 @@ public class RTCore implements Runnable {
 											microphone.stopRecording();
 											(new Thread(m)).start();
 											m.getLatch().await();
+											if(!(m instanceof SCModule) && Settings.gui) { mainWindow.setLoop("idle"); }
 											Thread.sleep(1000);
 											//TODO: may have to set result to null
 											moduleFound = true;
@@ -178,6 +218,7 @@ public class RTCore implements Runnable {
 									m.setRule(rule);
 									(new Thread(m)).start();
 									m.getLatch().await();
+									if(Settings.gui) { mainWindow.setLoop("idle"); }
 								}
 							}
 						}
@@ -200,6 +241,10 @@ public class RTCore implements Runnable {
 	
 	public static RTCore getInstance() {
 		return rtcore;
+	}
+	
+	public static MainWindow getWindow() {
+		return mainWindow;
 	}
 
 	public ArrayList<Profile> getProfileList() {

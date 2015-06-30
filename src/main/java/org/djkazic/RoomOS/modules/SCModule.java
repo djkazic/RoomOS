@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -15,6 +16,7 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 
+import org.djkazic.RoomOS.RTCore;
 import org.djkazic.RoomOS.basemodules.Module;
 import org.djkazic.RoomOS.sc.SoundCloud;
 import org.djkazic.RoomOS.sc.Track;
@@ -42,6 +44,14 @@ public class SCModule extends Module {
 	}
 
 	public void process() {
+		if(Settings.gui) {
+			if(rule.equals("cmd_music_gen")) {
+				RTCore.getWindow().setLoop("music");
+			} else {
+				RTCore.getWindow().setLoop("mood");
+			}
+		}
+		
 		//TODO: connectivity test, if fail -> local file playback
 		//TODO: mood switch (if local, specify flat_file?playlist? for this -> likely music/mood)
 		if(resume) {
@@ -146,6 +156,10 @@ public class SCModule extends Module {
 			e.printStackTrace();
 			if(e instanceof FileNotFoundException) {
 				uc.speak("Audio buffer could not be found. Check your network connection.");
+			} else if(e instanceof MalformedURLException) {
+				uc.speak("Something went wrong with your network connection. Retrying.");
+				e.printStackTrace();
+				findAndPlay();
 			}
 			latch.countDown();
 		}
