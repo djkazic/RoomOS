@@ -12,7 +12,7 @@
 	<!-- frequently tuned properties -->
 	<!-- ******************************************************** -->
 
-	<property name="logLevel" value="OFF" />
+	<property name="logLevel" value="WARNING" />
 	<property name="selectMixer" value="last" />
 	<property name="absoluteBeamWidth" value="-1" />
 	<property name="relativeBeamWidth" value="1E-80" />
@@ -177,7 +177,7 @@
 
 	<component name="speechClassifier"
 		type="edu.cmu.sphinx.frontend.endpoint.SpeechClassifier">
-		<!-- <property name="threshold" value="13" /> (default of 10) -->
+		<property name="threshold" value="12" /> <!-- (default of 10) -->
 	</component>
 
 	<component name="nonSpeechDataFilter"
