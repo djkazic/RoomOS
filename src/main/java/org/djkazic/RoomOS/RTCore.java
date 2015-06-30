@@ -7,12 +7,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.speech.recognition.RuleGrammar;
 import javax.speech.recognition.RuleParse;
-
 import org.djkazic.RoomOS.basemodules.Module;
-import org.djkazic.RoomOS.basemodules.PersonalizedModule;
 import org.djkazic.RoomOS.gui.MainWindow;
 import org.djkazic.RoomOS.modules.AmbienceModule;
 import org.djkazic.RoomOS.modules.SCModule;
@@ -20,12 +17,10 @@ import org.djkazic.RoomOS.rest.APIRouter;
 import org.djkazic.RoomOS.sql.ResponseFetcher;
 import org.djkazic.RoomOS.util.Settings;
 import org.djkazic.RoomOS.util.Utils;
-
 import com.gtranslate.Audio;
 import com.sun.speech.engine.recognition.BaseRecognizer;
 import com.sun.speech.engine.recognition.BaseRuleGrammar;
 import com.sun.syndication.feed.synd.SyndEntry;
-
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.jsgf.JSGFGrammar;
 import edu.cmu.sphinx.recognizer.Recognizer;
@@ -44,6 +39,7 @@ public class RTCore implements Runnable {
 	public List<SyndEntry> alreadyRead;
 
 	private Utils uc;
+	@SuppressWarnings("unused")
 	private ResponseFetcher rf;
 	private boolean playingSong;
 	private static MainWindow mainWindow;
@@ -112,7 +108,7 @@ public class RTCore implements Runnable {
 			uc.speak("REST API interface initialized.");
 			
 			if(Settings.gui) {
-				mainWindow.setLoop("idle");
+				mainWindow.reset();
 			}
 
 			recognizer = (Recognizer) cm.lookup("recognizer");
@@ -166,7 +162,7 @@ public class RTCore implements Runnable {
 												((SCModule) m).stop();
 												playingSong = false;
 												uc.speak("Music controls disabled.");
-												if(Settings.gui) { mainWindow.setLoop("idle"); }
+												if(Settings.gui) { mainWindow.reset(); }
 												microphone.clear();
 											} else if(rule.endsWith("pause")) {
 												((SCModule) m).stop();
@@ -183,32 +179,24 @@ public class RTCore implements Runnable {
 										System.out.println();
 										System.out.println("User said: " + resultText);
 									}
-									boolean moduleFound = false;
+									boolean scModule = false;
 									for(Module m : modules) {
 										if(m.filter(rule)) {
-											if(m instanceof PersonalizedModule) {
-												if(!((PersonalizedModule) m).getIndependentBoolean()) {
-													moduleFound = true;
-													continue;
-												}
-											}
 											if(m instanceof SCModule) {
 												playingSong = true;
+												scModule = true;
 											} 
 											m.setText(resultText);
 											m.setRule(rule);		
 											microphone.stopRecording();
 											(new Thread(m)).start();
 											m.getLatch().await();
-											if(!(m instanceof SCModule) && Settings.gui) { mainWindow.setLoop("idle"); }
 											Thread.sleep(1000);
 											//TODO: may have to set result to null
-											moduleFound = true;
 										}
 									}
-									if(!moduleFound) {
-										String speakText = rf.queryForRule(rule);
-										uc.speak(speakText); //Speak DB response
+									if(!scModule) {
+										if(Settings.gui) { mainWindow.reset(); }
 									}
 								}
 							}
@@ -218,7 +206,7 @@ public class RTCore implements Runnable {
 									m.setRule(rule);
 									(new Thread(m)).start();
 									m.getLatch().await();
-									if(Settings.gui) { mainWindow.setLoop("idle"); }
+									if(Settings.gui) { mainWindow.reset(); }
 								}
 							}
 						}
