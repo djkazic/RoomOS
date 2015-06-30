@@ -106,6 +106,7 @@ public class MainWindow extends JFrame {
 			}
 			ImageIcon testII = new ImageIcon(path);
 			changeGif(testII);
+			lastSetGifTime = System.currentTimeMillis();
 			return true;
 		}
 		return false;
