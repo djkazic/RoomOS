@@ -85,6 +85,9 @@ public class RTCore implements Runnable {
 			}
 			rf = new ResponseFetcher();
 
+			if(Settings.gui) {
+				mainWindow.setLoop("profiles");
+			}
 			Profile.loadProfiles();
 			currentProfile = null;
 
@@ -192,6 +195,7 @@ public class RTCore implements Runnable {
 											(new Thread(m)).start();
 											m.getLatch().await();
 											Thread.sleep(1000);
+											break;
 											//TODO: may have to set result to null
 										}
 									}
