@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.djkazic.RoomOS.RTCore;
 import org.djkazic.RoomOS.basemodules.PersonalizedModule;
+import org.djkazic.RoomOS.util.Settings;
 import org.djkazic.RoomOS.util.Utils;
 
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -26,6 +27,10 @@ public class NewsModule extends PersonalizedModule {
 	}
 
 	public void process() {
+		if(Settings.gui) {
+			RTCore.getWindow().setLoop("connecting");
+		}
+		
 		type = "news";
 		url = rt.getCurrentProfile().getNewsGeneric();
 		determineType();
