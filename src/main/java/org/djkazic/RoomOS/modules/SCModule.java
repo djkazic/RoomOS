@@ -45,7 +45,8 @@ public class SCModule extends Module {
 
 	public void process() {
 		if(Settings.gui) {
-			if(rule.equals("cmd_music_gen")) {
+			boolean regular = rule.equals("cmd_music_gen");
+			if(regular) {
 				RTCore.getWindow().setLoop("music");
 			} else {
 				RTCore.getWindow().setLoop("mood");
@@ -79,7 +80,14 @@ public class SCModule extends Module {
 			}
 		} else {
 			try {
+				if(Settings.gui) {
+					Thread.sleep(1000);
+					RTCore.getWindow().setLoop("connecting");
+				}
 				uc.speak("Connecting to SoundCloud.");
+				if(Settings.gui) {
+					RTCore.getWindow().setLoop("music");
+				}
 				sc = new SoundCloud(Settings.getScClient(), Settings.getScSecret());
 				if(rule.equals("cmd_music_mood")) {
 					uc.speak("Pulling mood playlist data.");
