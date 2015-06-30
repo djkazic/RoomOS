@@ -171,7 +171,6 @@ public class RTCore implements Runnable {
 												playingSong = false;
 												uc.speak("Music controls disabled.");
 												if(Settings.gui) { mainWindow.reset(); }
-												microphone.clear();
 											} else if(rule.endsWith("pause")) {
 												((SCModule) m).stop();
 											} else if(rule.endsWith("resume")) {
