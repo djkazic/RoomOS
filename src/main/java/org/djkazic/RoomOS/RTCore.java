@@ -144,7 +144,6 @@ public class RTCore implements Runnable {
 			musicControls = uc.getRuleNames("cmd_music_ctrl");
 
 			while (true) {
-
 				Result result = recognizer.recognize();
 				if(result != null) {
 					String resultText = result.getBestFinalResultNoFiller();
@@ -167,6 +166,7 @@ public class RTCore implements Runnable {
 												((SCModule) m).stop();
 												playingSong = false;
 												uc.speak("Music controls disabled.");
+												if(Settings.gui) { mainWindow.setLoop("idle"); }
 												microphone.clear();
 											} else if(rule.endsWith("pause")) {
 												((SCModule) m).stop();
