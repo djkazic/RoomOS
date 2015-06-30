@@ -101,7 +101,16 @@ public class SCModule extends Module {
 			//int rand = (int) (Math.random() * favorites.size());
 			Track streaming = trackPool.get(0);
 			String streamURLStr = streaming.getStreamUrl(sc);
+			
+			int x = 1;
+			while(streamURLStr == null) {
+				streaming = trackPool.get(x);
+				streamURLStr = streaming.getStreamUrl(sc);
+				x++;
+			}
+			
 			URL streamURL = new URL(streamURLStr);
+			
 			HttpURLConnection hconn = (HttpURLConnection) streamURL.openConnection();
 			buffer = new File("audioBuffer.mp3");
 			
@@ -157,9 +166,8 @@ public class SCModule extends Module {
 			if(e instanceof FileNotFoundException) {
 				uc.speak("Audio buffer could not be found. Check your network connection.");
 			} else if(e instanceof MalformedURLException) {
-				uc.speak("Something went wrong with your network connection. Retrying.");
+				uc.speak("Something went wrong with your network connection.");
 				e.printStackTrace();
-				findAndPlay();
 			}
 			latch.countDown();
 		}
