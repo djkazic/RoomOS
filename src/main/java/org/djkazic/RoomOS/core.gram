@@ -7,7 +7,7 @@ grammar core;
 	public <cmd_check_email> = [<id>] (see if there are | check for) [any] new emails;
 	public <cmd_check_news> = [<id>] (whats on the | [is there] any [new] | check the) news [(in | on | for) <news_list>];
 	public <cmd_alarm> = [<id>] set an alarm at <time>;
-	public <cmd_login> = <id> (log me in);
+	public <cmd_login> = <id> (log me in | authenticate);
 	
 //Ambient controls
 	public <cmd_ambient_activate> = [<id>] (re enable listening | resume monitoring);
@@ -28,8 +28,8 @@ grammar core;
 
 //Greet subcomponent (private)
 <greet> = hi;
-	<id> = <greet> (<id_kevin> | <id_cam>) [<filter_polite>];
-		<id_kevin> = ayden;
+	<id> = [<greet>] (<id_kevin> | <id_cam>) [<filter_polite>];
+		<id_kevin> = amber;
 		<id_cam> = test;
 		<filter_polite> = please | could you;
 		
