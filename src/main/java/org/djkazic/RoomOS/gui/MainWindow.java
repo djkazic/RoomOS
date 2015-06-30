@@ -125,4 +125,8 @@ public class MainWindow extends JFrame {
 		}
 		return false;
 	}
+	
+	public void reset() {
+		setLoop("idle");
+	}
 }
