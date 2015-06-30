@@ -26,16 +26,6 @@ public class MainWindow extends JFrame {
     private boolean fadeIn = false;
 
 	/**
-	 * Launch the application.
-	 * @throws InterruptedException 
-	 */
-	public static void main(String[] args) throws InterruptedException {
-		MainWindow frame = new MainWindow();
-		Thread.sleep(2000);
-		frame.setImage("authenticate");
-	}
-
-	/**
 	 * Create the frame.
 	 */
 	public MainWindow() {
@@ -44,7 +34,6 @@ public class MainWindow extends JFrame {
 		setBounds(100, 100, 500, 500);
 		
 		direction = 0.050f;
-		blacked = new CountDownLatch(1);
 		
 		contentPane = new JPanel();
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -92,6 +81,7 @@ public class MainWindow extends JFrame {
 	private void changeGif(ImageIcon replacement) {
 		try {
 			alwaysOn = false;                //Disables static light and starts fade out
+			if(blacked == null) { blacked = new CountDownLatch(1); }
 			blacked.await();                 //Waits until fully blacked out
 			blacked = new CountDownLatch(1); //Resets latch for blacked out state
 			gifHolder.setGif(replacement);   //Set actual image
@@ -108,19 +98,6 @@ public class MainWindow extends JFrame {
 		if(testImage.exists()) {
 			ImageIcon testII = new ImageIcon(path);
 			changeGif(testII);
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean setImage(String imageName) {
-		if(setLoop(imageName)) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			setLoop("idle");
 			return true;
 		}
 		return false;
