@@ -43,16 +43,7 @@ public class SCModule extends Module {
 		resume = false;
 	}
 
-	public void process() {
-		if(Settings.gui) {
-			boolean regular = rule.equals("cmd_music_gen");
-			if(regular) {
-				RTCore.getWindow().setLoop("music");
-			} else {
-				RTCore.getWindow().setLoop("mood");
-			}
-		}
-		
+	public void process() {		
 		//TODO: connectivity test, if fail -> local file playback
 		//TODO: mood switch (if local, specify flat_file?playlist? for this -> likely music/mood)
 		if(resume) {
@@ -68,7 +59,7 @@ public class SCModule extends Module {
 						}
 					});
 					uc.speak("Re entering music.");
-					latch.countDown();
+					triggerLatch();
 					mp3Player.play(pausedOnFrame, Integer.MAX_VALUE);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -84,14 +75,17 @@ public class SCModule extends Module {
 					RTCore.getWindow().setLoop("connecting");
 				}
 				uc.speak("Connecting to SoundCloud.");
-				if(Settings.gui) {
-					RTCore.getWindow().setLoop("music");
-				}
 				sc = new SoundCloud(Settings.getScClient(), Settings.getScSecret());
 				if(rule.equals("cmd_music_mood")) {
+					if(Settings.gui) {
+						RTCore.getWindow().setLoop("mood");
+					}
 					uc.speak("Pulling mood playlist data.");
 					trackPool = sc.getPlaylist(116954687).getTracks();
 				} else {
+					if(Settings.gui) {
+						RTCore.getWindow().setLoop("music");
+					}
 					uc.speak("Pulling your likes list.");
 					trackPool = sc.get("/users/114439318/favorites");
 				}
@@ -151,7 +145,7 @@ public class SCModule extends Module {
 					pausedOnFrame += event.getFrame() / 27;
 				}
 			});
-			latch.countDown();
+			triggerLatch();
 			
 			try {
 				mp3Player.play();
@@ -176,7 +170,7 @@ public class SCModule extends Module {
 				uc.speak("Something went wrong with your network connection.");
 				e.printStackTrace();
 			}
-			latch.countDown();
+			triggerLatch();
 		}
 	}
 

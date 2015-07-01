@@ -81,6 +81,6 @@ public class AlarmModule extends Module {
 			ar.addAlarm(parsedStr);
 			uc.speak("Alarm has been set.");
 		}
-		latch.countDown();
+		triggerLatch();
 	}
 }

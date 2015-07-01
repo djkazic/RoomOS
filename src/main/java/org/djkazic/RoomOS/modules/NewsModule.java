@@ -65,7 +65,7 @@ public class NewsModule extends PersonalizedModule {
 			e.printStackTrace();
 		}
 		uc.speak("For additional stories, ask again.");
-		latch.countDown();
+		triggerLatch();
 	}
 	
 	private void determineType() {

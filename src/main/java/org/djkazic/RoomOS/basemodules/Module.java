@@ -37,6 +37,7 @@ public abstract class Module implements Runnable {
 			for(String str : split) {
 				if(str.equals(cmd)) {
 					match = true;
+					latchCheck();
 				}
 			}
 		} else {
@@ -44,6 +45,17 @@ public abstract class Module implements Runnable {
 		}
 		exec = match;
 		return match;
+	}
+	
+	private void latchCheck() {
+		if(latch == null) {
+			latch = new CountDownLatch(1);
+		}
+	}
+	
+	protected void triggerLatch() {
+		latch.countDown();
+		latch = null;
 	}
 	
 	public String getTrigger() {

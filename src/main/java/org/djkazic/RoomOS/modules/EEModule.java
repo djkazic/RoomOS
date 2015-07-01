@@ -26,6 +26,6 @@ public class EEModule extends Module {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		latch.countDown();
+		triggerLatch();
 	}
 }

@@ -43,7 +43,7 @@ public class LoginModule extends Module {
 				load = ruleNames.get(index).substring(3);
 			}
 			RTCore.getInstance().setCurrentProfile(load);
-			latch.countDown();
+			triggerLatch();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

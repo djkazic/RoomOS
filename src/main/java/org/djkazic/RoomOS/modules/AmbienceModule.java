@@ -23,16 +23,16 @@ public class AmbienceModule extends Module {
 		if(rt.ambientListening && rule.equals("cmd_ambient_deactivate")) {
 			uc.speak("Disabling ambient listening");
 			rt.ambientListening = false;
-			latch.countDown();
+			triggerLatch();
 			return;
 		}
 		
 		if(!rt.ambientListening && rule.equals("cmd_ambient_activate")) {
 			uc.speak("Enabling ambient listening");
 			rt.ambientListening = true;
-			latch.countDown();
+			triggerLatch();
 			return;
 		}
-		latch.countDown();
+		triggerLatch();
 	}
 }
