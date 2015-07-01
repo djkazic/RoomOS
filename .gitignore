@@ -224,3 +224,4 @@ room_os.db
 room_os.db-shm
 room_os.db-wal
 *.profile
+picBuffer.jpg
