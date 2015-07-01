@@ -173,6 +173,9 @@ public class RTCore implements Runnable {
 												if(Settings.gui) { mainWindow.reset(); }
 											} else if(rule.endsWith("pause")) {
 												((SCModule) m).stop();
+												if(Settings.gui) {
+													mainWindow.setLoop("pause.jpg");
+												}
 											} else if(rule.endsWith("resume")) {
 												((SCModule) m).resume();
 												(new Thread(m)).start();
@@ -203,7 +206,10 @@ public class RTCore implements Runnable {
 											microphone.stopRecording();
 											(new Thread(m)).start();
 											m.getLatch().await();
+											m.regenLatch();
 											Thread.sleep(1000);
+											microphone.clear();
+											microphone.startRecording();
 											break;
 											//TODO: may have to set result to null
 										}
