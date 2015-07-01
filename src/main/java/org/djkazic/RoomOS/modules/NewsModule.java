@@ -27,6 +27,7 @@ public class NewsModule extends PersonalizedModule {
 	}
 
 	public void process() {
+		super.process();
 		if(Settings.gui) {
 			RTCore.getWindow().setLoop("connecting");
 		}

@@ -43,7 +43,8 @@ public class SCModule extends Module {
 		resume = false;
 	}
 
-	public void process() {		
+	public void process() {
+		super.process();
 		//TODO: connectivity test, if fail -> local file playback
 		//TODO: mood switch (if local, specify flat_file?playlist? for this -> likely music/mood)
 		if(resume) {

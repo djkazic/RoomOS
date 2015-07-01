@@ -17,6 +17,7 @@ public class LoginModule extends Module {
 	}
 
 	public void process() {
+		super.process();
 		try {
 			if(Settings.gui) {
 				RTCore.getWindow().setLoop("profiles");

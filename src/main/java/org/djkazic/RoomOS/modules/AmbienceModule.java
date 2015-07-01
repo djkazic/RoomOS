@@ -15,6 +15,7 @@ public class AmbienceModule extends Module {
 	}
 	
 	public void process() {
+		super.process();
 		if(Settings.gui) {
 			RTCore.getWindow().setLoop("authenticate");
 		}

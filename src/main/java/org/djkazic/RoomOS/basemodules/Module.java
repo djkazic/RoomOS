@@ -18,7 +18,9 @@ public abstract class Module implements Runnable {
 		RTCore.getInstance().modules.add(this);
 	}
 
-	public abstract void process();
+	public void process() {
+		latchCheck();
+	}
 	
 	public void setText(String text) {
 		resultText = text;
@@ -37,7 +39,6 @@ public abstract class Module implements Runnable {
 			for(String str : split) {
 				if(str.equals(cmd)) {
 					match = true;
-					latchCheck();
 				}
 			}
 		} else {

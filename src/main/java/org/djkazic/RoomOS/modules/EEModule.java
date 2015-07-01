@@ -12,6 +12,7 @@ public class EEModule extends Module {
 	}
 
 	public void process() {
+		super.process();
 		Utils uc = new Utils();
 		String asset = "";
 		if(resultText.startsWith("wish me")) {

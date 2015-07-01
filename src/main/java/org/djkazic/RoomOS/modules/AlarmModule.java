@@ -19,6 +19,7 @@ public class AlarmModule extends Module {
 	}
 
 	public void process() {
+		super.process();
 		if(Settings.gui) {
 			RTCore.getWindow().setLoop("alarm");
 		}
