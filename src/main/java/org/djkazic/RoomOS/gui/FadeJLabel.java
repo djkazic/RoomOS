@@ -43,20 +43,13 @@ public class FadeJLabel extends JLabel {
 	}
 
 	@Override
-	public void paint(Graphics g) {
-		Graphics2D g2d = (Graphics2D) g.create();
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, getAlpha()));
-		super.paint(g2d);
-		g2d.dispose();
-	}
-
-	@Override
 	protected void paintComponent(Graphics g) {
-		if (background != null) {
-			int x = (getWidth() - 500) / 2;
-			int y = (getHeight() - 500) / 2;
-			background.paintIcon(labelFor, g, x, y);
-		}
 		super.paintComponent(g);
+		if(background != null) {
+			Graphics2D g2d = (Graphics2D) g.create();
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, getAlpha()));
+			g2d.drawImage(background.getImage(), 0, 0, null);
+			g2d.dispose();
+		}
 	}
 }
