@@ -12,7 +12,6 @@ public class EEModule extends Module {
 	}
 
 	public void process() {
-		super.process();
 		Utils uc = new Utils();
 		String asset = "";
 		if(resultText.startsWith("wish me")) {
@@ -27,6 +26,6 @@ public class EEModule extends Module {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		triggerLatch();
+		latch.countDown();
 	}
 }

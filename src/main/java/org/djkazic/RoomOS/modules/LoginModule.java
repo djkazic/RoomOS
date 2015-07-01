@@ -17,7 +17,6 @@ public class LoginModule extends Module {
 	}
 
 	public void process() {
-		super.process();
 		try {
 			if(Settings.gui) {
 				RTCore.getWindow().setLoop("profiles");
@@ -44,7 +43,7 @@ public class LoginModule extends Module {
 				load = ruleNames.get(index).substring(3);
 			}
 			RTCore.getInstance().setCurrentProfile(load);
-			triggerLatch();
+			latch.countDown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

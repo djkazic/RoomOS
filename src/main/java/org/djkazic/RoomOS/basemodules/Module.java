@@ -18,9 +18,7 @@ public abstract class Module implements Runnable {
 		RTCore.getInstance().modules.add(this);
 	}
 
-	public void process() {
-		latchCheck();
-	}
+	public abstract void process();
 	
 	public void setText(String text) {
 		resultText = text;
@@ -48,15 +46,8 @@ public abstract class Module implements Runnable {
 		return match;
 	}
 	
-	private void latchCheck() {
-		if(latch == null) {
-			latch = new CountDownLatch(1);
-		}
-	}
-	
-	protected void triggerLatch() {
-		latch.countDown();
-		latch = null;
+	public void regenLatch() {
+		latch = new CountDownLatch(1);
 	}
 	
 	public String getTrigger() {

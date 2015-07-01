@@ -15,7 +15,6 @@ public class AmbienceModule extends Module {
 	}
 	
 	public void process() {
-		super.process();
 		if(Settings.gui) {
 			RTCore.getWindow().setLoop("authenticate");
 		}
@@ -24,16 +23,16 @@ public class AmbienceModule extends Module {
 		if(rt.ambientListening && rule.equals("cmd_ambient_deactivate")) {
 			uc.speak("Disabling ambient listening");
 			rt.ambientListening = false;
-			triggerLatch();
+			latch.countDown();
 			return;
 		}
 		
 		if(!rt.ambientListening && rule.equals("cmd_ambient_activate")) {
 			uc.speak("Enabling ambient listening");
 			rt.ambientListening = true;
-			triggerLatch();
+			latch.countDown();
 			return;
 		}
-		triggerLatch();
+		latch.countDown();
 	}
 }

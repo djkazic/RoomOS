@@ -27,7 +27,6 @@ public class NewsModule extends PersonalizedModule {
 	}
 
 	public void process() {
-		super.process();
 		if(Settings.gui) {
 			RTCore.getWindow().setLoop("connecting");
 		}
@@ -66,7 +65,7 @@ public class NewsModule extends PersonalizedModule {
 			e.printStackTrace();
 		}
 		uc.speak("For additional stories, ask again.");
-		triggerLatch();
+		latch.countDown();
 	}
 	
 	private void determineType() {

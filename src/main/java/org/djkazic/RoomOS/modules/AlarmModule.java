@@ -19,7 +19,6 @@ public class AlarmModule extends Module {
 	}
 
 	public void process() {
-		super.process();
 		if(Settings.gui) {
 			RTCore.getWindow().setLoop("alarm");
 		}
@@ -82,6 +81,6 @@ public class AlarmModule extends Module {
 			ar.addAlarm(parsedStr);
 			uc.speak("Alarm has been set.");
 		}
-		triggerLatch();
+		latch.countDown();
 	}
 }
