@@ -47,13 +47,13 @@ public class MainWindow extends JFrame {
 		gifHolder.setGif(defaultIcon);
 		contentPane.add(gifHolder, BorderLayout.CENTER);
 
-		timer = new Timer(40, new ActionListener() {
+		timer = new Timer(50, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				float alpha = gifHolder.getAlpha();
 				alpha += direction;
-				if(alpha < 0) {
-					alpha = 0;
+				if(alpha < 0.09f) {
+					alpha = 0.09f;
 				} else if(alpha > 1) {
 					alpha = 1;
 				}
@@ -68,7 +68,7 @@ public class MainWindow extends JFrame {
 					}
 				} else {
 					direction = -0.070f;
-					if(alpha == 0) {
+					if(alpha == 0.09f) {
 						blacked.countDown();
 					}
 				}
@@ -85,6 +85,7 @@ public class MainWindow extends JFrame {
 			if(blacked == null) { blacked = new CountDownLatch(1); }
 			blacked.await();                 //Waits until fully blacked out
 			blacked = new CountDownLatch(1); //Resets latch for blacked out state
+			gifHolder.getGif().getImage().flush();
 			gifHolder.setGif(replacement);   //Set actual image
 			fadeIn = true;                   //Enables fade in (automatic disable)
 			timer.restart();                 //Reset timer
@@ -97,7 +98,7 @@ public class MainWindow extends JFrame {
 		String path = "assets/imgres/" + imageName + ".gif";
 		File testImage = new File(path);
 		if(testImage.exists()) {
-			if(lastSetGifTime + 1000L > System.currentTimeMillis()) {
+			if(lastSetGifTime + 1500L > System.currentTimeMillis()) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {

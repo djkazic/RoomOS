@@ -18,6 +18,10 @@ public class FadeJLabel extends JLabel {
 		setAlpha(1f);
 	}
 
+	public ImageIcon getGif() {
+		return background;
+	}
+	
 	public void setGif(ImageIcon gif) {
 		background = gif;
 	}
