@@ -6,11 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 public class MainWindow extends JFrame {
@@ -41,9 +39,10 @@ public class MainWindow extends JFrame {
 		contentPane.setBackground(Color.BLACK);
 		setContentPane(contentPane);
 
-		gifHolder = new FadeJLabel("", SwingConstants.CENTER);
-		defaultIcon = new ImageIcon("assets/imgres/boot.gif");
-		
+		gifHolder = new FadeJLabel();
+		gifHolder.setAlignmentX(CENTER_ALIGNMENT);
+		gifHolder.setAlignmentY(CENTER_ALIGNMENT);
+		defaultIcon = new ImageIcon("assets/imgres/gifs/boot.gif");
 		gifHolder.setGif(defaultIcon);
 		contentPane.add(gifHolder, BorderLayout.CENTER);
 
@@ -94,11 +93,27 @@ public class MainWindow extends JFrame {
 		}
 	}
 	
-	public boolean setLoop(String imageName) {
-		String path = "assets/imgres/" + imageName + ".gif";
+	public void setLoop(String imageName) {
+		String path = null;
+		if(!imageName.contains(".")) {
+			path = "assets/imgres/gifs/" + imageName + ".gif";
+		} else {
+			path = "assets/imgres/" + imageName;
+		}
 		File testImage = new File(path);
+		swap(path, testImage);
+	}
+	
+	public void setAlbumArt() {
+		System.out.println("triggered attempt at AA");
+		String path = "picBuffer.jpg";
+		File testImage = new File(path);
+		swap(path, testImage);
+	}
+	
+	private void swap(String path, File testImage) {
 		if(testImage.exists()) {
-			if(lastSetGifTime + 1500L > System.currentTimeMillis()) {
+			if(lastSetGifTime + 1000L > System.currentTimeMillis()) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -108,9 +123,7 @@ public class MainWindow extends JFrame {
 			ImageIcon testII = new ImageIcon(path);
 			changeGif(testII);
 			lastSetGifTime = System.currentTimeMillis();
-			return true;
 		}
-		return false;
 	}
 	
 	public void reset() {
