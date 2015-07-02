@@ -174,7 +174,7 @@ public class RTCore implements Runnable {
 											} else if(rule.endsWith("pause")) {
 												((SCModule) m).stop();
 												if(Settings.gui) {
-													mainWindow.setLoop("pause.jpg");
+													mainWindow.setLoop("pause.png");
 												}
 											} else if(rule.endsWith("resume")) {
 												((SCModule) m).resume();
@@ -225,6 +225,7 @@ public class RTCore implements Runnable {
 									m.setRule(rule);
 									(new Thread(m)).start();
 									m.getLatch().await();
+									m.regenLatch();
 									if(Settings.gui) { mainWindow.reset(); }
 								}
 							}
