@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.djkazic.RoomOS.RTCore;
+import org.djkazic.RoomOS.util.Settings;
 import org.djkazic.RoomOS.util.Utils;
 
 public class AlarmRunnable implements Runnable {
@@ -45,8 +47,16 @@ public class AlarmRunnable implements Runnable {
 				String hour = csplit[0];
 				String minute = csplit[1];
 
+				if(Settings.gui) {
+					RTCore.getWindow().setLoop("alarm");
+				}
+				
 				uc.speak("Alarm set at " + hour + ":" + minute + " has been triggered.");
 				alarms.remove(selected);
+				
+				if(Settings.gui) {
+					RTCore.getWindow().reset();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
