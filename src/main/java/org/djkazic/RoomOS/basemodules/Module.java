@@ -32,13 +32,8 @@ public abstract class Module implements Runnable {
 	
 	public boolean filter(String cmd) {
 		boolean match = false;
-		if(trigger.contains(" ")) {
-			String[] split = trigger.split(" ");
-			for(String str : split) {
-				if(str.equals(cmd)) {
-					match = true;
-				}
-			}
+		if(trigger.contains("*")) {
+			match = cmd.startsWith(trigger.substring(0, trigger.length() - 2));
 		} else {
 			match = (cmd.equals(trigger));
 		}

@@ -10,7 +10,7 @@ public class AmbienceModule extends Module {
 	private RTCore rt;
 	
 	public AmbienceModule() {
-		super("cmd_ambient_activate cmd_ambient_deactivate");
+		super("cmd_ambient_*");
 		rt = RTCore.getInstance();
 	}
 	

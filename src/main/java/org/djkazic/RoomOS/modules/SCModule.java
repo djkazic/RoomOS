@@ -38,7 +38,7 @@ public class SCModule extends Module {
 	private BufferedInputStream bis;
 
 	public SCModule() {
-		super("cmd_music_gen cmd_music_mood");
+		super("cmd_music_*");
 		uc = new Utils();
 		stopping = false;
 		resume = false;
