@@ -33,7 +33,8 @@ public class SCModule extends Module {
 	private int pausedOnFrame = 0;
 	private boolean stopping;
 	private boolean resume;
-	private File buffer;
+	private File audioBuffer;
+	private File picBuffer;
 	private BufferedInputStream bis;
 
 	public SCModule() {
@@ -44,14 +45,13 @@ public class SCModule extends Module {
 	}
 
 	public void process() {
-		super.process();
 		//TODO: connectivity test, if fail -> local file playback
 		//TODO: mood switch (if local, specify flat_file?playlist? for this -> likely music/mood)
 		if(resume) {
 			resume = false;
 			if(mp3Player != null && pausedOnFrame != 0) {
 				try {
-					bis = new BufferedInputStream(new FileInputStream(buffer));
+					bis = new BufferedInputStream(new FileInputStream(audioBuffer));
 					mp3Player = new AdvancedPlayer(bis);
 					mp3Player.setPlayBackListener(new PlaybackListener() {
 						@Override
@@ -59,8 +59,11 @@ public class SCModule extends Module {
 							pausedOnFrame += event.getFrame() / 27;
 						}
 					});
+					if(Settings.gui) {
+						RTCore.getWindow().setAlbumArt();
+					}
 					uc.speak("Re entering music.");
-					triggerLatch();
+					latch.countDown();
 					mp3Player.play(pausedOnFrame, Integer.MAX_VALUE);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -111,16 +114,25 @@ public class SCModule extends Module {
 				x++;
 			}
 			
-			URL streamURL = new URL(streamURLStr);
-			
-			HttpURLConnection hconn = (HttpURLConnection) streamURL.openConnection();
-			buffer = new File("audioBuffer.mp3");
-			
-			if(buffer.exists()) {
-				buffer.delete();
+			String picURLStr = streaming.getArtworkUrl().replace("large", "t500x500");
+			picBuffer = new File("picBuffer.jpg");
+			if(picBuffer.exists()) {
+				picBuffer.delete();
 			}
-			preBuffer(hconn);
+			if(picURLStr != null) {
+				URL picURL = new URL(picURLStr);
+				HttpURLConnection picHconn = (HttpURLConnection) picURL.openConnection();	
+				preBuffer(picHconn, "picBuffer.jpg");
+			}
 			
+			URL streamURL = new URL(streamURLStr);
+			HttpURLConnection audioHconn = (HttpURLConnection) streamURL.openConnection();
+			audioBuffer = new File("audioBuffer.mp3");
+			if(audioBuffer.exists()) {
+				audioBuffer.delete();
+			}
+			preBuffer(audioHconn, "audioBuffer.mp3");
+
 			//URLConnection mp3Con = streamURL.openConnection();
 			//mp3Con.addRequestProperty("User-Agent",
 			//"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
@@ -132,12 +144,23 @@ public class SCModule extends Module {
 			//Smart formatting of titling
 			if(title.contains(" - ")) {
 				String[] split = title.split(" - ");
-				uc.speak("You're listening to: " + uc.firstCaps(split[1]) + " by " + uc.firstCaps(split[0]));
+				uc.speak("You're listening to: " + uc.firstCaps(split[1]));
+				if(picURLStr != null) {
+					if(Settings.gui) {
+						RTCore.getWindow().setAlbumArt();
+					}
+				}
+				uc.speak("By " + uc.firstCaps(split[0]));
 			} else {
 				uc.speak("You're listening to: " + uc.firstCaps(title));
+				if(picURLStr != null) {
+					if(Settings.gui) {
+						RTCore.getWindow().setAlbumArt();
+					}
+				}
 			}
 			
-			bis = new BufferedInputStream(new FileInputStream(buffer));
+			bis = new BufferedInputStream(new FileInputStream(audioBuffer));
 
 			mp3Player = new AdvancedPlayer(bis);
 			mp3Player.setPlayBackListener(new PlaybackListener() {
@@ -146,7 +169,7 @@ public class SCModule extends Module {
 					pausedOnFrame += event.getFrame() / 27;
 				}
 			});
-			triggerLatch();
+			latch.countDown();
 			
 			try {
 				mp3Player.play();
@@ -160,7 +183,7 @@ public class SCModule extends Module {
 			if(!stopping && trackPool.size() > 0) {
 				uc.speak("Advancing song.");
 				pausedOnFrame = 0;
-				buffer.delete();
+				audioBuffer.delete();
 				findAndPlay();
 			}
 		} catch (Exception e) {
@@ -171,7 +194,7 @@ public class SCModule extends Module {
 				uc.speak("Something went wrong with your network connection.");
 				e.printStackTrace();
 			}
-			triggerLatch();
+			latch.countDown();
 		}
 	}
 
@@ -190,18 +213,15 @@ public class SCModule extends Module {
 		resume = true;
 	}
 	
-	private void preBuffer(final HttpURLConnection httpConn)
+	private void preBuffer(final HttpURLConnection httpConn, final String fileName)
 			throws IOException {
 		(new Thread(new Runnable() {
 			public void run() {
 				try {
-
 					int responseCode = httpConn.getResponseCode();
 
 					// always check HTTP response code first
 					if (responseCode == HttpURLConnection.HTTP_OK) {
-						String fileName = "audioBuffer.mp3";
-
 						InputStream inputStream = httpConn.getInputStream();
 						String saveFilePath = fileName;
 
