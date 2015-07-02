@@ -13,8 +13,8 @@ public class FadeJLabel extends JLabel {
 	private float alpha;
 	private ImageIcon background;
 
-	public FadeJLabel(String string, int center) {
-		super(string, center);
+	public FadeJLabel() {
+		super();
 		setAlpha(1f);
 	}
 
@@ -48,7 +48,7 @@ public class FadeJLabel extends JLabel {
 		if(background != null) {
 			Graphics2D g2d = (Graphics2D) g.create();
 			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, getAlpha()));
-			g2d.drawImage(background.getImage(), 0, 0, null);
+			g2d.drawImage(background.getImage(), 0, -12, null);
 			g2d.dispose();
 		}
 	}
