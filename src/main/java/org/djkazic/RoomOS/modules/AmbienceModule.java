@@ -33,6 +33,10 @@ public class AmbienceModule extends Module {
 			latch.countDown();
 			return;
 		}
+		
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {}
 		latch.countDown();
 	}
 }
