@@ -14,5 +14,6 @@ public class PersonalityModule extends Module {
 		Utils uc = new Utils();
 		ResponseFetcher rf = new ResponseFetcher();
 		uc.speak(rf.queryForRule(rule));
+		latch.countDown();
 	}
 }

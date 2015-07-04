@@ -6,7 +6,7 @@ import java.util.Date;
 
 import org.djkazic.RoomOS.RTCore;
 import org.djkazic.RoomOS.basemodules.Module;
-import org.djkazic.RoomOS.extrun.AlarmRunnable;
+import org.djkazic.RoomOS.modext.AlarmRunnable;
 import org.djkazic.RoomOS.util.Settings;
 import org.djkazic.RoomOS.util.Utils;
 
