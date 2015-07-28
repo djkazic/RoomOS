@@ -1,0 +1,31 @@
+* AlarmModule -> laundry preset
+* AlarmModule -> recurring, morning wake with weather (configurable)
+* AlarmModule -> potentially light dim awake
+
+* Weather module
+
+* Google Calendar integration
+
+* Google Voice / TextNow integration
+
+* LightsModule
+  * IR sending signals from ESP, with half frosting or simply listen for signal and send pulse
+  * One ESP per LED strip, or a hub that sends signals to either with wires
+
+* Presence detection via Bluetooth LE ping
+
+OR
+
+* PIR sensor presence detection (no common area identification node)
+  * If any of the sensors trigger someone is home (anybody home)
+  * If the sensor triggers and its a room, that person is presumed home (is kevin in his room)
+  * Watchdog mode: notification if someone enters room (guard my room)
+  
+* IOT integration - either set mode/o OR define explicit methods for control via params
+* REST front-end with bootstrap - var/www hosted on server to call those methods
+* Pebble integration via REST calls
+  * Tasker for Android
+  * Pebble app for iOS
+
+HW Side:
+* Potential 433Mhz radio integration with either ESP or Rapsberry Pi GPIO
