@@ -11,14 +11,9 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
-
 import javazoom.jl.decoder.JavaLayerException;
-
 import org.djkazic.RoomOS.RTCore;
 import org.djkazic.RoomOS.basemodules.Module;
-
-import com.gtranslate.Audio;
-import com.gtranslate.Language;
 import com.openpojo.reflection.PojoClass;
 import com.openpojo.reflection.impl.PojoClassFactory;
 
@@ -68,7 +63,7 @@ public class Utils {
 			}
 			try {
 				//TODO: check for cached streams
-				InputStream sound = rt.audio.getAudio(str, Language.ENGLISH);
+				InputStream sound = rt.audio.getAudio(str);
 				if(rt.microphone != null && rt.microphone.isRecording()) {
 					rt.microphone.stopRecording();
 				}
