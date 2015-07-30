@@ -110,6 +110,7 @@ public class SCModule extends Module {
 			int x = 1;
 			while(streamURLStr == null) {
 				streaming = trackPool.get(x);
+				System.out.println("Song chosen was null, choosing " + streaming.getTitle());
 				streamURLStr = streaming.getStreamUrl(sc);
 				x++;
 			}
