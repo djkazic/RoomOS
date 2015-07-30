@@ -19,12 +19,12 @@ public class EEModule extends Module {
 		} else if(resultText.startsWith("motivate me")) {
 			asset = "motivation";
 		}
-		try {
-			if(!asset.equals("")) {
+		if(!asset.equals("")) {
+			try {
 				uc.playAudio(asset);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		}
 		latch.countDown();
 	}
