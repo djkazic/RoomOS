@@ -22,11 +22,12 @@ public class NewsModule extends PersonalizedModule {
 	
 	public NewsModule() {
 		super("cmd_check_news");
-		uc = new Utils();
-		rt = RTCore.getInstance();
 	}
 
 	public void process() {
+		uc = new Utils();
+		rt = RTCore.getInstance();
+		
 		if(Settings.gui) {
 			RTCore.getWindow().setLoop("connecting");
 		}
@@ -34,6 +35,24 @@ public class NewsModule extends PersonalizedModule {
 		type = "news";
 		url = rt.getCurrentProfile().getNewsGeneric();
 		determineType();
+		readNews();
+		latch.countDown();
+	}
+	
+	private void determineType() {
+		if(resultText.endsWith("finance")) {
+			type = "finance";
+			url = rt.getCurrentProfile().getNewsFinance();
+		} else if(resultText.endsWith("sports")) {
+			type = "sports";
+			url = rt.getCurrentProfile().getNewsSports();
+		} else if(resultText.endsWith("tech") || (resultText.endsWith("technology"))) {
+			type = "tech";
+			url = rt.getCurrentProfile().getNewsTechnology();
+		}
+	}
+	
+	private void readNews() {
 		uc.speak("Connecting to online data feeds.");
 		uc.speak("Your top stories today for " + type + ": ");
 		try {
@@ -65,19 +84,5 @@ public class NewsModule extends PersonalizedModule {
 			e.printStackTrace();
 		}
 		uc.speak("For additional stories, ask again.");
-		latch.countDown();
-	}
-	
-	private void determineType() {
-		if(resultText.endsWith("finance")) {
-			type = "finance";
-			url = rt.getCurrentProfile().getNewsFinance();
-		} else if(resultText.endsWith("sports")) {
-			type = "sports";
-			url = rt.getCurrentProfile().getNewsSports();
-		} else if(resultText.endsWith("tech") || (resultText.endsWith("technology"))) {
-			type = "tech";
-			url = rt.getCurrentProfile().getNewsTechnology();
-		}
 	}
 }
