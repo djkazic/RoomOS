@@ -11,32 +11,36 @@ public class AmbienceModule extends Module {
 	
 	public AmbienceModule() {
 		super("cmd_ambient_*");
-		rt = RTCore.getInstance();
 	}
 	
 	public void process() {
+		rt = RTCore.getInstance();
+		
 		if(Settings.gui) {
 			RTCore.getWindow().setLoop("authenticate");
 		}
 		
-		Utils uc = new Utils();
 		if(rt.ambientListening && rule.equals("cmd_ambient_deactivate")) {
-			uc.speak("Disabling ambient listening");
-			rt.ambientListening = false;
-			latch.countDown();
-			return;
-		}
-		
-		if(!rt.ambientListening && rule.equals("cmd_ambient_activate")) {
-			uc.speak("Enabling ambient listening");
-			rt.ambientListening = true;
-			latch.countDown();
-			return;
+			disableAmbience();
+		} else if(!rt.ambientListening && rule.equals("cmd_ambient_activate")) {
+			enableAmbience();
 		}
 		
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {}
 		latch.countDown();
+	}
+	
+	private void disableAmbience() {
+		Utils uc = new Utils();
+		uc.speak("Disabling ambient listening");
+		rt.ambientListening = false;
+	}
+	
+	private void enableAmbience() {
+		Utils uc = new Utils();
+		uc.speak("Enabling ambient listening");
+		rt.ambientListening = true;
 	}
 }
